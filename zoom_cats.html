@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zoom EULA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@400;1,400..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div class="layout">
+        <nav class="sidebar">
+            <ul id="category-list"></ul>
+        </nav>
+
+        <main class="content">
+            <div id="category-title">Select a category from the left</div>
+
+            <div class="tab-buttons" id="tab-buttons" style="display:none;">
+                <button data-tab="cuecards" class="tab-btn active">Cue Cards</button>
+                <button data-tab="comic" class="tab-btn">Comic Strip</button>
+                <button data-tab="video" class="tab-btn">Video</button>
+            </div>
+
+            <div id="display-area"></div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
