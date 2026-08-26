@@ -4727,11 +4727,13 @@
             setEulaSource(doc);
 
             renderGlobe();
+            updateFilters();
         }
 
         document.addEventListener("DOMContentLoaded", () => {
             setEulaSource(activeDocument);
             renderGlobe();
+            updateFilters();
         });
 
         function updateCategoryDetails(cat) {
@@ -4804,11 +4806,9 @@
         function updateFilters() {
             const showHigh = document.getElementById('filter-high').checked;
             const showMedium = document.getElementById('filter-medium').checked;
-            const showLow = document.getElementById('filter-low').checked;
 
             document.querySelectorAll('.tag-risk-high').forEach(el => el.classList.toggle('hidden-risk', !showHigh));
             document.querySelectorAll('.tag-risk-medium').forEach(el => el.classList.toggle('hidden-risk', !showMedium));
-            document.querySelectorAll('.tag-risk-low').forEach(el => el.classList.toggle('hidden-risk', !showLow));
         }
     </script>
 </head>
@@ -4992,10 +4992,6 @@ found the generated formats understandable, accurate, and strongly preferred ove
 <label class="flex items-center gap-2 cursor-pointer text-sm font-label-md text-[#F59E0B]">
 <input class="form-checkbox bg-surface-variant border-white/20 text-[#F59E0B] rounded" id="filter-medium" onchange="updateFilters()" type="checkbox"/>
                                 Med
-                            </label>
-<label class="flex items-center gap-2 cursor-pointer text-sm font-label-md text-[#10B981]">
-<input class="form-checkbox bg-surface-variant border-white/20 text-[#10B981] rounded" id="filter-low" onchange="updateFilters()" type="checkbox"/>
-                                Low
                             </label>
 </div>
 <button class="bg-surface-container/60 hover:bg-surface-variant text-on-surface p-2 rounded-full border border-white/10 transition-colors flex items-center justify-center backdrop-blur-md" onclick="toggleAnimation()" title="Play/Pause Animation">
