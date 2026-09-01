@@ -500,8 +500,8 @@
         const tutorialSteps = [
             {
                 selector: '#category-cloud',
-                title: 'Meet the Topic Constellation',
-                body: 'Every floating bubble is a risk category the AI pulled out of this EULA. Click any bubble to open its full breakdown below.',
+                title: 'Meet the Category Constellation',
+                body: 'Every floating bubble is a category the AI pulled out of this EULA. Click any bubble to open its full breakdown below.',
                 scroll: 'center'
             },
             {
@@ -513,7 +513,7 @@
             {
                 selector: '#risk-filter-group',
                 title: 'Filter by Risk',
-                body: 'Check or uncheck High and Medium to show or hide those categories on the constellation, so you can focus on what matters most.',
+                body: 'Check or uncheck High and Medium to show or hide those categories on the constellation.',
                 scroll: 'center'
             },
             {
@@ -533,7 +533,7 @@
             {
                 selector: '#active-category',
                 title: 'The Category Breakdown',
-                body: "Once you pick a topic, its plain-language summary, real-world impact, and red flags to watch for all show up here.",
+                body: "Once you pick a topic, its summary, real-world impact, and lookouts for all show up here.",
                 scroll: 'start'
             },
             {
@@ -546,21 +546,21 @@
             {
                 selector: '#tabbtn-cards',
                 title: 'Cue Cards',
-                body: 'Flip through bite-sized question-and-answer cue cards that break the clause down even further.',
+                body: 'Flip through question-and-answer cue cards that break the clause down even further.',
                 scroll: 'center',
                 before: () => switchRightTab('cards')
             },
             {
                 selector: '#tabbtn-video',
                 title: 'Video Explainers',
-                body: 'Watch a short narrated video walking through what this clause means for you.',
+                body: 'Watch a short video walking through what this clause means.',
                 scroll: 'center',
                 before: () => switchRightTab('video')
             },
             {
                 selector: '#tabbtn-eula',
                 title: 'Original EULA Text',
-                body: "Want the source? This tab shows the actual EULA PDF side-by-side, so you can always verify things yourself.",
+                body: "Want the source? This tab shows the actual EULA PDF side-by-side, so you can always verify information yourself.",
                 scroll: 'center',
                 before: () => switchRightTab('eula')
             },
@@ -576,6 +576,30 @@
         let tutorialStepIndex = 0;
         let tutorialActive = false;
         let tutorialReflowHandler = null;
+        let tutorialClickTarget = null;
+        let tutorialClickHandler = null;
+
+        function clearTutorialClickAdvance() {
+            if (tutorialClickTarget && tutorialClickHandler) {
+                tutorialClickTarget.removeEventListener('click', tutorialClickHandler);
+            }
+            tutorialClickTarget = null;
+            tutorialClickHandler = null;
+        }
+
+        function attachTutorialClickAdvance(step) {
+            clearTutorialClickAdvance();
+            if (!step || !step.selector) return;
+            const target = document.querySelector(step.selector);
+            if (!target) return;
+            tutorialClickTarget = target;
+            tutorialClickHandler = () => {
+                // Let the highlighted element's own click behavior run first (e.g. selecting
+                // a category, switching a tab), then advance the tour on top of that.
+                setTimeout(() => { if (tutorialActive) nextTutorialStep(); }, 0);
+            };
+            target.addEventListener('click', tutorialClickHandler);
+        }
 
         function maybeStartTutorial() {
             let done = false;
@@ -607,7 +631,7 @@
                 try { step.before(); } catch (e) { /* noop */ }
             }
 
-            document.getElementById('tutorial-step-count').textContent = `Step ${tutorialStepIndex + 1} of ${tutorialSteps.length}`;
+            document.getElementById('tutorial-step-count').textContent = `${tutorialStepIndex + 1}/${tutorialSteps.length}`;
             document.getElementById('tutorial-title').textContent = step.title;
             document.getElementById('tutorial-body').textContent = step.body;
 
@@ -620,6 +644,7 @@
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth', block: step.scroll || 'center' });
             }
+            attachTutorialClickAdvance(step);
             setTimeout(() => positionTutorialUI(step), 380);
         }
 
@@ -702,6 +727,7 @@
 
         function endTutorial() {
             tutorialActive = false;
+            clearTutorialClickAdvance();
             document.getElementById('tutorial-spotlight').classList.remove('visible');
             document.getElementById('tutorial-tooltip').classList.remove('visible');
             try { localStorage.setItem(TUTORIAL_STORAGE_KEY, '1'); } catch (e) { /* noop */ }
@@ -19116,7 +19142,7 @@
 <main class="w-full max-w-5xl mx-auto p-container-padding md:p-stack-lg">
 <header class="mb-stack-lg text-center mt-8">
 <h1 class="font-display-lg text-display-lg text-on-surface mb-4">EULALens</h1>
-<p class="text-headline-md text-on-surface-variant font-headline-md">Visualizing complexity and extracting actionable insights from legal documents.</p>
+<p class="text-body-lg text-on-surface-variant font-body-lg max-w-2xl mx-auto">EULALens reads the terms of service you would normally skip and turns wordy clauses into straightforward summaries: comics, cue cards, and short videos. See exactly what you agree to.</p>
 </header>
 <div class="glass-panel rounded-xl p-container-padding mb-stack-lg flex justify-center border border-white/5 shadow-lg">
 <div class="aspect-[21/9] w-full bg-surface-container/30 border border-white/10 rounded-lg flex items-center justify-center relative overflow-hidden">
@@ -19261,7 +19287,6 @@ communicated to end users.
 <span class="material-symbols-outlined text-secondary text-3xl">analytics</span>
 <span id="doc-analysis-title">Document Analysis: Zoom TOS</span>
 </h1>
-<p class="text-on-surface-variant mt-2 max-w-2xl">Visualizing complexity and extracting actionable insights from the current selected legal document.</p>
 </header>
 <!-- Interactive Category Cloud & Overview Bento -->
 <div class="mb-stack-lg">
@@ -19272,7 +19297,7 @@ communicated to end users.
 <div>
 <h3 class="font-title-lg text-title-lg mb-stack-sm flex items-center gap-2 leading-normal">
 <span class="material-symbols-outlined text-secondary">scatter_plot</span>
-Topic Constellation (3D)
+Category Constellation (3D)
 </h3>
 <p class="text-sm text-on-surface-variant">Select a topic on the globe to explore detailed analysis. Drag to rotate manually.</p>
 </div>
