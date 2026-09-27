@@ -7,59 +7,61 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     "colors": {
-                        "inverse-on-surface": "#233143",
-                        "primary-fixed": "#dae2fd",
-                        "outline": "#909097",
-                        "primary-container": "#0f172a",
-                        "secondary": "#7bd0ff",
-                        "tertiary-container": "#0c1829",
-                        "background": "#051424",
-                        "secondary-container": "#00a6e0",
-                        "surface-container-low": "#0d1c2d",
-                        "on-surface": "#d4e4fa",
-                        "surface-variant": "#273647",
-                        "surface-container": "#122131",
-                        "on-background": "#d4e4fa",
-                        "tertiary-fixed-dim": "#bcc7de",
+                        "inverse-on-surface": "#1a2f33",
+                        "primary-fixed": "#c9e8e2",
+                        "outline": "#4a6d6d",
+                        "primary-container": "#0d2b36",
+                        "secondary": "#6fd9c9",
+                        "tertiary-container": "#0a1f28",
+                        "background": "#03070b",
+                        "secondary-container": "#3d8f82",
+                        "surface-container-low": "#0a1c24",
+                        "on-surface": "#d6e6e4",
+                        "surface-variant": "#23424b",
+                        "surface-container": "#0f232c",
+                        "on-background": "#d6e6e4",
+                        "tertiary-fixed-dim": "#8fc6be",
                         "error-container": "#93000a",
                         "on-error": "#690005",
-                        "on-tertiary-fixed": "#111c2d",
-                        "on-tertiary-container": "#768197",
-                        "on-secondary-container": "#00374d",
-                        "primary-fixed-dim": "#bec6e0",
-                        "on-primary": "#283044",
-                        "on-secondary-fixed": "#001e2c",
-                        "on-primary-fixed-variant": "#3f465c",
-                        "on-tertiary": "#263143",
-                        "surface-container-lowest": "#010f1f",
-                        "primary": "#bec6e0",
+                        "on-tertiary-fixed": "#0a1f28",
+                        "on-tertiary-container": "#9fc4bc",
+                        "on-secondary-container": "#04211c",
+                        "primary-fixed-dim": "#9fd4cb",
+                        "on-primary": "#052623",
+                        "on-secondary-fixed": "#04211c",
+                        "on-primary-fixed-variant": "#2a4e4e",
+                        "on-tertiary": "#0a1f28",
+                        "surface-container-lowest": "#020509",
+                        "primary": "#8fc6be",
                         "error": "#ffb4ab",
-                        "on-secondary-fixed-variant": "#004c69",
-                        "tertiary": "#bcc7de",
-                        "surface-container-high": "#1c2b3c",
-                        "on-tertiary-fixed-variant": "#3c475a",
-                        "inverse-surface": "#d4e4fa",
-                        "surface-container-highest": "#273647",
-                        "surface": "#051424",
-                        "on-primary-fixed": "#131b2e",
-                        "on-primary-container": "#798098",
-                        "tertiary-fixed": "#d8e3fb",
-                        "surface-dim": "#051424",
-                        "surface-tint": "#bec6e0",
-                        "secondary-fixed": "#c4e7ff",
+                        "on-secondary-fixed-variant": "#1c5c52",
+                        "tertiary": "#8fc6be",
+                        "surface-container-high": "#152e37",
+                        "on-tertiary-fixed-variant": "#3c5a5a",
+                        "inverse-surface": "#d6e6e4",
+                        "surface-container-highest": "#1c3a44",
+                        "surface": "#03070b",
+                        "on-primary-fixed": "#052623",
+                        "on-primary-container": "#a9d4cc",
+                        "tertiary-fixed": "#c9e8e2",
+                        "surface-dim": "#03070b",
+                        "surface-tint": "#8fc6be",
+                        "secondary-fixed": "#c4ede4",
                         "on-error-container": "#ffdad6",
-                        "secondary-fixed-dim": "#7bd0ff",
-                        "on-surface-variant": "#c6c6cd",
-                        "surface-bright": "#2c3a4c",
-                        "outline-variant": "#45464d",
-                        "inverse-primary": "#565e74",
-                        "on-secondary": "#00354a"
+                        "secondary-fixed-dim": "#6fd9c9",
+                        "on-surface-variant": "#b7d4d0",
+                        "surface-bright": "#1e3a3a",
+                        "outline-variant": "#3a5a5a",
+                        "inverse-primary": "#2f5b56",
+                        "on-secondary": "#04211c"
                     },
                     "borderRadius": {
                         "DEFAULT": "0.25rem",
@@ -102,20 +104,76 @@
         }
     </script>
 <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: #010304;
+            position: relative;
+            overflow-x: hidden;
+        }
+        .font-mono-tech {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            letter-spacing: 0.04em;
+        }
+        .brand-font {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            letter-spacing: -0.03em;
+            font-weight: 700;
+            background: linear-gradient(120deg, #6fd9c9 0%, #8fc6be 50%, #a9e8de 100%) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            color: transparent !important;
+            filter: drop-shadow(0 0 18px rgba(111, 217, 201, 0.35));
+        }
         .glass-panel {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            background: rgba(19, 40, 42, 0.45);
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+            border: 1px solid rgba(214, 230, 228, 0.16);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(165deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 30%, transparent 55%);
+            pointer-events: none;
+        }
+        .glass-panel-strong {
+            position: relative;
+            background: rgba(10, 25, 30, 0.78);
+            backdrop-filter: blur(32px) saturate(160%);
+            -webkit-backdrop-filter: blur(32px) saturate(160%);
+            border: 1px solid rgba(214, 230, 228, 0.22);
+            box-shadow: 0 8px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(111, 217, 201, 0.05) inset;
+            overflow: hidden;
+        }
+        .glass-panel-strong::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(165deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 30%, transparent 55%);
+            pointer-events: none;
+        }
+        .glow-border {
+            box-shadow: 0 0 0 1px rgba(111, 217, 201, 0.2), 0 0 24px rgba(111, 217, 201, 0.08);
         }
         .glass-card {
-            background: rgba(51, 65, 85, 0.8);
+            background: rgba(35, 66, 75, 0.8);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(214, 230, 228, 0.12);
             transition: transform 0.6s;
             transform-style: preserve-3d;
         }
+        .glass-pill {
+            border-radius: 9999px !important;
+        }
+
+        /* --- Cue cards (flip) --- */
         .flip-card {
             perspective: 1000px;
         }
@@ -140,106 +198,83 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 1rem;
+            padding: 1.25rem;
             border-radius: 0.75rem;
             box-sizing: border-box;
         }
         .flip-card-front {
-            background-color: #334155;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            background: rgba(15, 35, 40, 0.55);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        .flip-card-front::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(150deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.02) 32%, rgba(255, 255, 255, 0) 55%);
+            pointer-events: none;
+        }
+        .flip-card-front span.material-symbols-outlined {
+            font-size: 2rem;
+            position: relative;
+        }
+        .flip-card-front p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            line-height: 1.4;
+            font-weight: 600;
+            position: relative;
         }
         .flip-card-content-scroll {
             width: 100%;
             max-height: 100%;
             overflow-y: auto;
             scrollbar-width: thin;
+            position: relative;
         }
         .flip-card-back {
-            transform: rotateY(180deg);
-            background-color: #f5deb3;
-            color: #000000 !important;
-            justify-content: flex-start;
-        }
-        .flip-card-back p, .flip-card-back span, .flip-card-back div {
-            color: #000000 !important;
-        }
-        
-        .category-cloud {
-            position: relative;
-            width: 100%;
-            height: 400px;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 800px;
+            transform: rotateY(180deg);
+            justify-content: flex-start;
+            background: rgba(15, 35, 40, 0.55);
+            backdrop-filter: blur(22px) saturate(180%);
+            -webkit-backdrop-filter: blur(22px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 10px 30px rgba(0, 0, 0, 0.35);
         }
-        .globe-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            animation: rotateGlobe 30s infinite linear;
-        }
-        .globe-container.paused {
-            animation-play-state: paused;
-        }
-        @keyframes rotateGlobe {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
-        }
-        .counter-rotate {
-            animation: counterRotateGlobe 30s infinite linear;
-            transform-style: preserve-3d;
-        }
-        .globe-container.paused .counter-rotate {
-            animation-play-state: paused;
-        }
-        @keyframes counterRotateGlobe {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(-360deg); }
-        }
-        .floating-item {
+        .flip-card-back::before {
+            content: '';
             position: absolute;
-            left: 50%;
-            top: 50%;
-            cursor: pointer;
-            transition: filter 0.3s, opacity 0.3s;
-            transform-style: preserve-3d;
-            white-space: nowrap;
-        }
-        .floating-item .inner-content {
-            transform: translate(-50%, -50%); /* Centering */
-            transition: transform 0.3s, filter 0.3s;
-            backface-visibility: visible;
-        }
-        .floating-item:hover .inner-content {
-            transform: translate(-50%, -50%) scale(1.1);
-            filter: brightness(1.2);
-        }
-        .floating-item.hidden-risk {
-            opacity: 0;
+            inset: 0;
+            background: linear-gradient(150deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.02) 32%, rgba(255, 255, 255, 0) 55%);
             pointer-events: none;
         }
-        .category-cloud {
-            cursor: grab;
+        .flip-card-back p, .flip-card-back span, .flip-card-back div {
+            color: #dcf2ee !important;
+            font-family: 'Inter', sans-serif;
+            position: relative;
         }
-        .category-cloud:active {
-            cursor: grabbing;
+        .flip-card-back .font-label-md {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            color: #7fd9c9 !important;
         }
-        #insights-sidebar {
-            scrollbar-width: thin;
+        .flip-card-back p.text-xs {
+            font-size: 0.95rem;
+            line-height: 1.55;
+            letter-spacing: 0.01em;
         }
-        #try-another-modal.flex {
-            display: flex;
-        }
-        
-        .severity-high { color: #EF4444; border-color: rgba(239, 68, 68, 0.5); }
-        .severity-medium { color: #F59E0B; border-color: rgba(245, 158, 11, 0.5); }
+
+        .severity-high { color: #D9705E; border-color: rgba(217, 112, 94, 0.5); }
+        .severity-medium { color: #D9A25A; border-color: rgba(217, 162, 90, 0.5); }
         .severity-low { color: #10B981; border-color: rgba(16, 185, 129, 0.5); }
-        
-        .bg-severity-high { background-color: rgba(239, 68, 68, 0.1); }
-        .bg-severity-medium { background-color: rgba(245, 158, 11, 0.1); }
+
+        .bg-severity-high { background-color: rgba(217, 112, 94, 0.1); }
+        .bg-severity-medium { background-color: rgba(217, 162, 90, 0.1); }
         .bg-severity-low { background-color: rgba(16, 185, 129, 0.1); }
 
         #quick-index-dropdown {
@@ -249,13 +284,40 @@
             transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out;
         }
         #quick-index-dropdown.open {
-            max-height: 400px;
+            max-height: 420px;
             opacity: 1;
             padding: 1rem;
         }
+        .quick-index-group-label {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #909097;
+            grid-column: 1 / -1;
+            margin-top: 0.35rem;
+            padding-bottom: 0.15rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .quick-index-group-label:first-child { margin-top: 0; }
+
+        /* --- Comic overlay (sized to fit within one screen, no extra scroll) --- */
         .comic-overlay-wrap {
             position: relative;
             width: 100%;
+            flex: 1;
+            min-height: 0;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .comic-overlay-wrap img {
+            max-height: 100%;
+            max-width: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
         }
         .comic-overlay-grid {
             position: absolute;
@@ -322,6 +384,110 @@
         .comic-bubble.kind-note { background: #FEF9C3; border-color: #CA8A04; color: #713F12; transform: rotate(-1.5deg); }
         .comic-bubble.kind-caption { background: rgba(0,0,0,0.75); color: #fff; border: none; border-radius: 4px; font-style: normal; }
 
+        /* --- Insight tabs (Impact / Lookouts) --- */
+        .insight-tab-btn {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* --- Category ticker (replaces the 3D globe) --- */
+        .ticker-viewport {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+        }
+        .ticker-row {
+            display: flex;
+            gap: 0.6rem;
+            width: max-content;
+            will-change: transform;
+        }
+        .ticker-row.dir-ltr { animation: tickerLTR var(--ticker-duration, 40s) linear infinite; }
+        .ticker-row.dir-rtl { animation: tickerRTL var(--ticker-duration, 40s) linear infinite; }
+        .ticker-viewport.paused .ticker-row { animation-play-state: paused; }
+        @keyframes tickerLTR {
+            from { transform: translateX(-50%); }
+            to { transform: translateX(0%); }
+        }
+        @keyframes tickerRTL {
+            from { transform: translateX(0%); }
+            to { transform: translateX(-50%); }
+        }
+        .ticker-pill {
+            flex-shrink: 0;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s, border-color 0.2s;
+        }
+        .ticker-pill:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.15);
+        }
+
+        /* --- PDF upload dropzone --- */
+        .upload-dropzone {
+            border: 1.5px dashed rgba(111, 217, 201, 0.35);
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .upload-dropzone.drag-over {
+            border-color: rgba(111, 217, 201, 0.9);
+            background: rgba(111, 217, 201, 0.06);
+        }
+
+        /* --- Tech grid background --- */
+        body {
+            background-image:
+                linear-gradient(rgba(111, 217, 201, 0.055) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(111, 217, 201, 0.055) 1px, transparent 1px);
+            background-size: 44px 44px, 44px 44px;
+            background-attachment: fixed;
+        }
+        .hero-grid {
+            position: absolute;
+            top: -10%;
+            bottom: -10%;
+            left: 50%;
+            width: 100vw;
+            transform: translateX(-50%);
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(111, 217, 201, 0.10) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(111, 217, 201, 0.10) 1px, transparent 1px);
+            background-size: 44px 44px, 44px 44px;
+            -webkit-mask-image: radial-gradient(ellipse 70% 100% at 50% 50%, #000 0%, transparent 75%);
+            mask-image: radial-gradient(ellipse 70% 100% at 50% 50%, #000 0%, transparent 75%);
+        }
+
+        /* --- Learn more collapsible --- */
+        #learn-more-panel {
+            display: grid;
+            grid-template-rows: 0fr;
+            opacity: 0;
+            transition: grid-template-rows 0.5s ease, opacity 0.4s ease;
+        }
+        #learn-more-panel.open {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        #learn-more-panel > div {
+            overflow: hidden;
+        }
+        #learn-more-toggle .chevron {
+            transition: transform 0.3s ease;
+        }
+        #learn-more-toggle.open .chevron {
+            transform: rotate(180deg);
+        }
+
+        #try-another-modal.flex, #categories-modal.flex {
+            display: flex;
+        }
+
         /* --- Onboarding tutorial --- */
         #tutorial-spotlight {
             position: absolute;
@@ -340,7 +506,7 @@
             width: 320px;
             max-width: calc(100vw - 32px);
             background: #0d1c2d;
-            border: 1px solid rgba(123, 208, 255, 0.35);
+            border: 1px solid rgba(111, 217, 201, 0.35);
             border-radius: 12px;
             padding: 18px 20px;
             box-shadow: 0 12px 40px rgba(0,0,0,0.5);
@@ -350,7 +516,7 @@
             pointer-events: none;
         }
         #tutorial-tooltip.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
-        #tutorial-tooltip .tutorial-step-count { font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: #7bd0ff; font-weight: 600; margin-bottom: 6px; }
+        #tutorial-tooltip .tutorial-step-count { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: #7bd0ff; font-weight: 600; margin-bottom: 6px; }
         #tutorial-tooltip h4 { font-size: 15px; font-weight: 700; color: #d4e4fa; margin-bottom: 6px; }
         #tutorial-tooltip p { font-size: 13.5px; line-height: 1.5; color: #c6c6cd; margin-bottom: 14px; }
         #tutorial-tooltip .tutorial-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -394,74 +560,26 @@
         function selectFromDialog(doc) {
             switchDocument(doc);
             closeTryAnotherDialog();
-            // Always pop back up to the globe when a new EULA is picked
+            // Always pop back up to the top of the output when a new EULA is picked
             window.scrollTo({ top: 0, behavior: 'instant' });
         }
 
-        function toggleAnimation() {
-            const container = document.getElementById('globe-container');
-            const icon = document.getElementById('pause-icon');
-            container.classList.toggle('paused');
-            if (container.classList.contains('paused')) {
-                icon.textContent = 'play_arrow';
-            } else {
-                icon.textContent = 'pause';
-                // Resuming: clear any manual drag transforms so the CSS animation takes back over
-                manualRotation = 0;
-                container.style.animation = '';
-                container.style.transform = '';
-                document.querySelectorAll('.counter-rotate').forEach(c => {
-                    c.style.animation = '';
-                    c.style.transform = '';
-                });
-            }
+        function openCategoriesDialog() {
+            const modal = document.getElementById('categories-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         }
 
-        // --- Globe drag-to-rotate ---
-        let isDraggingGlobe = false;
-        let dragStartX = 0;
-        let dragStartRotation = 0;
-        let manualRotation = 0;
+        function closeCategoriesDialog() {
+            const modal = document.getElementById('categories-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
 
-        function initGlobeDrag() {
-            const cloud = document.getElementById('category-cloud');
-            const container = document.getElementById('globe-container');
-            if (!cloud || cloud.dataset.dragInit) return;
-            cloud.dataset.dragInit = 'true';
-
-            const startDrag = (clientX) => {
-                // Manual dragging always takes control; pause the auto-rotation while doing so.
-                if (!container.classList.contains('paused')) {
-                    container.classList.add('paused');
-                    const icon = document.getElementById('pause-icon');
-                    if (icon) icon.textContent = 'play_arrow';
-                }
-                isDraggingGlobe = true;
-                dragStartX = clientX;
-                dragStartRotation = manualRotation;
-            };
-
-            const moveDrag = (clientX) => {
-                if (!isDraggingGlobe) return;
-                const delta = clientX - dragStartX;
-                manualRotation = dragStartRotation + delta * 0.5;
-                container.style.animation = 'none';
-                container.style.transform = `rotateY(${manualRotation}deg)`;
-                document.querySelectorAll('.counter-rotate').forEach(c => {
-                    c.style.animation = 'none';
-                    c.style.transform = `rotateY(${-manualRotation}deg)`;
-                });
-            };
-
-            const endDrag = () => { isDraggingGlobe = false; };
-
-            cloud.addEventListener('mousedown', (e) => startDrag(e.clientX));
-            window.addEventListener('mousemove', (e) => moveDrag(e.clientX));
-            window.addEventListener('mouseup', endDrag);
-
-            cloud.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX), { passive: true });
-            window.addEventListener('touchmove', (e) => moveDrag(e.touches[0].clientX), { passive: true });
-            window.addEventListener('touchend', endDrag);
+        function selectFromCategoriesDialog(catId) {
+            const cat = categories.find(c => c.id === catId);
+            if (cat) updateCategoryDetails(cat);
+            closeCategoriesDialog();
         }
 
         function switchRightTab(tab) {
@@ -487,6 +605,57 @@
                     btn.classList.add('border-transparent', 'text-on-surface-variant');
                 }
             });
+
+            if (tab === 'comic') {
+                // Container was hidden (display:none) while the image loaded, so
+                // dimensions weren't available then. Recompute now that it's visible.
+                requestAnimationFrame(positionComicOverlay);
+            }
+        }
+
+        function positionComicOverlay() {
+            const img = document.getElementById('cat-comic-img');
+            const grid = document.getElementById('cat-comic-overlay-grid');
+            if (!img || !grid || !img.naturalWidth) return;
+
+            const wrap = img.parentElement;
+            const containerW = wrap.clientWidth;
+            const containerH = wrap.clientHeight;
+            const naturalW = img.naturalWidth;
+            const naturalH = img.naturalHeight;
+
+            const scale = Math.min(containerW / naturalW, containerH / naturalH);
+            const renderedW = naturalW * scale;
+            const renderedH = naturalH * scale;
+            const offsetX = (containerW - renderedW) / 2;
+            const offsetY = (containerH - renderedH) / 2;
+
+            grid.style.left = `${offsetX}px`;
+            grid.style.top = `${offsetY}px`;
+            grid.style.width = `${renderedW}px`;
+            grid.style.height = `${renderedH}px`;
+            grid.style.right = 'auto';
+            grid.style.bottom = 'auto';
+        }
+        window.addEventListener('resize', () => {
+            if (document.getElementById('right-tab-comic') && !document.getElementById('right-tab-comic').classList.contains('hidden')) {
+                positionComicOverlay();
+            }
+        });
+
+        function toggleInsightPanel(tab) {
+            const wrap = document.getElementById(`insight-panel-${tab}-wrap`);
+            const chevron = document.getElementById(`insight-chevron-${tab}`);
+            const isOpen = !wrap.classList.contains('hidden');
+            wrap.classList.toggle('hidden', isOpen);
+            chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+
+        function collapseInsightPanels() {
+            ['impact', 'lookouts'].forEach(tab => {
+                document.getElementById(`insight-panel-${tab}-wrap`).classList.add('hidden');
+                document.getElementById(`insight-chevron-${tab}`).style.transform = 'rotate(0deg)';
+            });
         }
 
         function toggleQuickIndex() {
@@ -494,32 +663,144 @@
             dropdown.classList.toggle('open');
         }
 
+        // Categories sorted high risk first, then medium (then anything else), for
+        // the ticker dialog, the Quick Index list, and "Next Category" navigation.
+        const RISK_ORDER = { high: 0, medium: 1, low: 2 };
+        function getSortedCategories() {
+            return [...categories].sort((a, b) => (RISK_ORDER[a.risk] ?? 9) - (RISK_ORDER[b.risk] ?? 9));
+        }
+
+        function nextCategory() {
+            const sorted = getSortedCategories();
+            const currentId = document.getElementById('active-category').dataset.catId;
+            const idx = sorted.findIndex(c => c.id === currentId);
+            const next = sorted[(idx + 1) % sorted.length];
+            updateCategoryDetails(next, { scroll: false });
+        }
+
+        // --- Learn more (workflow diagram / abstract / people / paper) ---
+        function toggleLearnMore() {
+            const panel = document.getElementById('learn-more-panel');
+            const btn = document.getElementById('learn-more-toggle');
+            const opening = !panel.classList.contains('open');
+            panel.classList.toggle('open', opening);
+            btn.classList.toggle('open', opening);
+            btn.querySelector('.toggle-label').textContent = opening ? 'Show less' : 'Learn more';
+            if (opening) {
+                setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+            }
+        }
+
+        // --- "Try it yourself" PDF upload (demo UI) ---
+        function initUploadDropzone() {
+            const zone = document.getElementById('upload-dropzone');
+            const input = document.getElementById('upload-input');
+            if (!zone || !input) return;
+
+            zone.addEventListener('click', () => input.click());
+            input.addEventListener('change', () => {
+                if (input.files && input.files[0]) handleUploadedFile(input.files[0]);
+            });
+
+            ['dragenter', 'dragover'].forEach(evt => {
+                zone.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+            });
+            ['dragleave', 'drop'].forEach(evt => {
+                zone.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                });
+            });
+            zone.addEventListener('drop', (e) => {
+                const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+                if (file) handleUploadedFile(file);
+            });
+        }
+
+        function handleUploadedFile(file) {
+            const status = document.getElementById('upload-status');
+            if (!file || file.type !== 'application/pdf') {
+                status.innerHTML = `<p class="text-sm text-[#D9705E]">Please upload a PDF file.</p>`;
+                return;
+            }
+            status.innerHTML = `
+                <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+                    <span class="material-symbols-outlined text-secondary animate-spin text-base">progress_activity</span>
+                    Analyzing "${file.name}"…
+                </div>`;
+            setTimeout(() => {
+                status.innerHTML = `
+                    <div class="glass-panel rounded-lg p-stack-md border-l-4 severity-medium text-sm text-on-surface-variant">
+                        <p class="font-label-md text-on-surface mb-1">This demo doesn't run live analysis yet</p>
+                        <p>Custom PDF processing needs the full EULALens pipeline, which isn't available in this static preview. Try one of the sample EULAs below to see the complete experience.</p>
+                    </div>`;
+            }, 1400);
+        }
+
         // --- Onboarding tutorial ---
         const TUTORIAL_STORAGE_KEY = 'eulalens_tutorial_done';
 
         const tutorialSteps = [
             {
-                selector: '#category-cloud',
-                title: 'Meet the Category Constellation',
-                body: 'Every floating bubble is a category the AI pulled out of this EULA. Click any bubble to open its full breakdown below.',
+                selector: '#active-category',
+                title: 'Straight to the Point',
+                body: "We start you right on the highest-risk category we found — its summary, real-world impact, and lookouts all show up here.",
+                scroll: 'start'
+            },
+            {
+                selector: '#insight-tabs',
+                title: 'Impact & Lookouts',
+                body: 'These two tabs explain what the clause actually means for you, and the exact phrases to watch for in the text.',
                 scroll: 'center'
             },
             {
-                selector: '#toggle-animation-btn',
-                title: 'Pause It Anytime',
-                body: 'The constellation rotates on its own. Click this button to pause the motion so you can read a label, then click again to resume.',
-                scroll: 'center'
+                selector: '#tabbtn-video',
+                title: 'Video Explainers',
+                body: 'Watch a short video walking through what this clause means — the fastest way to understand it.',
+                scroll: 'center',
+                before: () => switchRightTab('video')
             },
             {
-                selector: '#risk-filter-group',
-                title: 'Filter by Risk',
-                body: 'Check or uncheck High and Medium to show or hide those categories on the constellation.',
+                selector: '#tabbtn-cards',
+                title: 'Cue Cards',
+                body: 'Flip through question-and-answer cue cards that break the clause down even further.',
+                scroll: 'center',
+                before: () => switchRightTab('cards')
+            },
+            {
+                selector: '#tabbtn-comic',
+                title: 'Comics',
+                body: 'See the clause acted out as a short illustrated comic strip — an easy way to understand what it actually means.',
+                scroll: 'center',
+                before: () => switchRightTab('comic')
+            },
+            {
+                selector: '#tabbtn-eula',
+                title: 'Original EULA Text',
+                body: "Want the source? This tab shows the actual EULA PDF side-by-side, so you can always verify information yourself.",
+                scroll: 'center',
+                before: () => switchRightTab('eula')
+            },
+            {
+                selector: '#next-category-btn',
+                title: 'Keep Going',
+                body: "Click here to jump to the next category, ordered from highest to lowest risk.",
+                scroll: 'center',
+                after: () => switchRightTab('video')
+            },
+            {
+                selector: '#categories-btn',
+                title: 'See Everything at Once',
+                body: 'Open this to see every category from this EULA, sorted by risk level, scrolling by like headlines. Click any one to jump straight to it.',
                 scroll: 'center'
             },
             {
                 selector: '#quick-index-btn',
                 title: 'Or Use the Quick Index',
-                body: 'Prefer a list over a globe? Open the Quick Index for a color-coded list of every category — click any entry to jump straight to it.',
+                body: 'Prefer a simple list? Open the Quick Index for every category sorted by risk — click any entry to jump straight to it.',
                 scroll: 'center',
                 before: () => {
                     const dropdown = document.getElementById('quick-index-dropdown');
@@ -531,45 +812,10 @@
                 }
             },
             {
-                selector: '#active-category',
-                title: 'The Category Breakdown',
-                body: "Once you pick a topic, its summary, real-world impact, and lookouts for all show up here.",
-                scroll: 'start'
-            },
-            {
-                selector: '#tabbtn-comic',
-                title: 'Comics',
-                body: 'See the clause acted out as a short illustrated comic strip — an easy way to understand what it actually means.',
-                scroll: 'center',
-                before: () => switchRightTab('comic')
-            },
-            {
-                selector: '#tabbtn-cards',
-                title: 'Cue Cards',
-                body: 'Flip through question-and-answer cue cards that break the clause down even further.',
-                scroll: 'center',
-                before: () => switchRightTab('cards')
-            },
-            {
-                selector: '#tabbtn-video',
-                title: 'Video Explainers',
-                body: 'Watch a short video walking through what this clause means.',
-                scroll: 'center',
-                before: () => switchRightTab('video')
-            },
-            {
-                selector: '#tabbtn-eula',
-                title: 'Original EULA Text',
-                body: "Want the source? This tab shows the actual EULA PDF side-by-side, so you can always verify information yourself.",
-                scroll: 'center',
-                before: () => switchRightTab('eula')
-            },
-            {
                 selector: '#try-another-btn',
                 title: 'Try Another EULA',
                 body: "Curious about a different app's terms? Click here anytime to switch to another EULA.",
-                scroll: 'center',
-                after: () => switchRightTab('comic')
+                scroll: 'center'
             }
         ];
 
@@ -18921,14 +19167,22 @@
         function renderQuickIndex() {
             const grid = document.getElementById('quick-index-grid');
             grid.innerHTML = '';
-            const riskColor = { high: '#EF4444', medium: '#F59E0B', low: '#10B981' };
+            const riskColor = { high: '#D9705E', medium: '#D9A25A', low: '#10B981' };
+            const riskLabel = { high: 'High Risk', medium: 'Medium Risk', low: 'Low Risk' };
+            const sorted = getSortedCategories();
 
-            categories.forEach((cat, i) => {
+            let lastRisk = null;
+            sorted.forEach((cat) => {
+                if (cat.risk !== lastRisk) {
+                    const label = document.createElement('div');
+                    label.className = 'quick-index-group-label';
+                    label.textContent = riskLabel[cat.risk] || cat.risk;
+                    grid.appendChild(label);
+                    lastRisk = cat.risk;
+                }
                 const btn = document.createElement('button');
-                btn.className = i === 0
-                    ? 'text-left px-2 py-1 rounded-md bg-white/5 border border-white/10 hover:bg-white/10 transition-colors flex justify-between items-center group text-xs'
-                    : 'text-left px-2 py-1 rounded-md border border-transparent hover:bg-white/5 transition-colors flex justify-between items-center group text-on-surface-variant hover:text-on-surface text-xs';
-                btn.innerHTML = `<span class="font-label-md ${i === 0 ? 'text-on-surface' : ''} truncate">${cat.name}</span><span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ml-1" style="background-color:${riskColor[cat.risk] || '#10B981'}"></span>`;
+                btn.className = 'text-left px-2 py-1 rounded-md border border-transparent hover:bg-white/5 transition-colors flex justify-between items-center group text-on-surface-variant hover:text-on-surface text-xs';
+                btn.innerHTML = `<span class="font-label-md truncate">${cat.name}</span><span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ml-1" style="background-color:${riskColor[cat.risk] || '#10B981'}"></span>`;
                 btn.onclick = () => {
                     updateCategoryDetails(cat);
                     document.getElementById('quick-index-dropdown').classList.remove('open');
@@ -18937,54 +19191,51 @@
             });
         }
 
-        function renderGlobe() {
-            const globeContainer = document.getElementById('globe-container');
-            globeContainer.innerHTML = '';
+        // --- Category ticker (replaces the old 3D globe): categories scroll by like
+        // news headlines in three alternating-direction rows, split by risk level. ---
+        function buildTickerRows(list, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            if (!list.length) {
+                container.innerHTML = `<p class="text-sm text-on-surface-variant px-2">No categories at this risk level.</p>`;
+                return;
+            }
 
-            // Reset the container's rotation animation so it restarts in phase
-            // with the freshly created counter-rotating tags below. Without this,
-            // the container keeps spinning from wherever it was while new tags'
-            // counter-rotation starts fresh at 0deg, producing a tilted/mirrored look.
-            const wasPaused = globeContainer.classList.contains('paused');
-            globeContainer.style.animation = 'none';
-            void globeContainer.offsetWidth; // force reflow to apply the reset
-            globeContainer.style.animation = '';
-            globeContainer.classList.toggle('paused', wasPaused);
+            const rowCount = 3;
+            const rows = Array.from({ length: rowCount }, () => []);
+            list.forEach((cat, i) => rows[i % rowCount].push(cat));
 
-            const radius = 150;
-            const items = categories.length;
+            rows.forEach((rowCats, i) => {
+                if (!rowCats.length) return;
+                const dir = i % 2 === 0 ? 'dir-ltr' : 'dir-rtl';
+                const viewport = document.createElement('div');
+                viewport.className = 'ticker-viewport mb-2';
 
-            categories.forEach((cat, i) => {
-                const phi = Math.acos(-1 + (2 * i) / items);
-                const theta = Math.sqrt(items * Math.PI) * phi;
-                
-                const x = radius * Math.cos(theta) * Math.sin(phi);
-                const y = radius * Math.sin(theta) * Math.sin(phi);
-                const z = radius * Math.cos(phi);
+                const track = document.createElement('div');
+                track.className = `ticker-row ${dir}`;
+                track.style.setProperty('--ticker-duration', `${18 + rowCats.length * 4}s`);
 
-                const el = document.createElement('div');
-                el.className = `floating-item tag-risk-${cat.risk}`;
-                // Apply ONLY 3D translation
-                el.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
-                
-                const counter = document.createElement('div');
-                counter.className = 'counter-rotate';
+                // Duplicate the row's content once so the loop is seamless.
+                const renderPills = () => rowCats.map(cat => {
+                    const pill = document.createElement('button');
+                    pill.className = `ticker-pill glass-panel severity-${cat.risk} border rounded-full px-4 py-2 font-label-md text-xs md:text-sm`;
+                    pill.textContent = cat.name;
+                    pill.onclick = () => selectFromCategoriesDialog(cat.id);
+                    return pill;
+                });
+                renderPills().forEach(p => track.appendChild(p));
+                renderPills().forEach(p => track.appendChild(p));
 
-                const inner = document.createElement('div');
-                inner.className = `inner-content font-label-md px-3 py-1 rounded-full glass-panel severity-${cat.risk} border shadow-lg text-xs md:text-sm`;
-                inner.textContent = cat.name;
-                
-                counter.appendChild(inner);
-                el.appendChild(counter);
-                
-                el.onclick = () => updateCategoryDetails(cat);
-                
-                globeContainer.appendChild(el);
+                viewport.appendChild(track);
+                container.appendChild(viewport);
             });
+        }
 
-            renderQuickIndex();
-            updateCategoryDetails(categories[0], { scroll: false });
-            initGlobeDrag();
+        function renderCategoryTickers() {
+            const high = categories.filter(c => c.risk === 'high');
+            const medium = categories.filter(c => c.risk === 'medium');
+            buildTickerRows(high, 'ticker-high');
+            buildTickerRows(medium, 'ticker-medium');
         }
 
         const originalEulaPaths = {
@@ -19025,50 +19276,60 @@
 
             setEulaSource(doc);
 
-            renderGlobe();
-            updateFilters();
+            renderQuickIndex();
+            renderCategoryTickers();
+            // Land directly on the highest-risk category's output — no globe/landing step.
+            updateCategoryDetails(getSortedCategories()[0], { scroll: false });
         }
 
         document.addEventListener("DOMContentLoaded", () => {
             setEulaSource(activeDocument);
-            renderGlobe();
-            updateFilters();
+            renderQuickIndex();
+            renderCategoryTickers();
+            updateCategoryDetails(getSortedCategories()[0], { scroll: false });
+            initUploadDropzone();
         });
 
         function updateCategoryDetails(cat, options = {}) {
             const { scroll = true } = options;
             const activeCategory = document.getElementById('active-category');
-            
-            // Update panel classes
-            activeCategory.className = `glass-panel rounded-xl p-container-padding border-t-2 severity-${cat.risk} relative overflow-hidden transition-all duration-500`;
-            
+            activeCategory.dataset.catId = cat.id;
+
+            // Update panel classes (preserve the flex layout classes used for fit-to-screen sizing)
+            activeCategory.className = `glass-panel rounded-xl p-container-padding border-t-2 severity-${cat.risk} relative transition-all duration-500 flex-1 min-h-0 flex flex-col`;
+
             // Update Title and Badge
             document.getElementById('cat-title').textContent = cat.name;
             const badge = document.getElementById('cat-badge');
             badge.textContent = `${cat.risk} Risk`;
             badge.className = `px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider border severity-${cat.risk} bg-severity-${cat.risk} shadow-lg`;
-            
-            if(cat.risk === 'high') badge.style.boxShadow = '0 0 10px rgba(239,68,68,0.2)';
-            else if(cat.risk === 'medium') badge.style.boxShadow = '0 0 10px rgba(245,158,11,0.2)';
+
+            if(cat.risk === 'high') badge.style.boxShadow = '0 0 10px rgba(217,112,94,0.2)';
+            else if(cat.risk === 'medium') badge.style.boxShadow = '0 0 10px rgba(217,162,90,0.2)';
             else badge.style.boxShadow = '0 0 10px rgba(16,185,129,0.2)';
 
             // Update Summary
             document.getElementById('cat-summary').innerHTML = `<p>${cat.summary}</p>`;
-            
-            // Update Impact and Lookouts
+
+            // Update Impact and Lookouts (shown as tabs)
             document.getElementById('cat-impact').innerHTML = cat.impact.map(i => `<li>${i}</li>`).join('');
             document.getElementById('cat-lookouts').innerHTML = cat.lookouts.map(i => `<li>${i}</li>`).join('');
-            
-            // Update Borders — both outlined in the category's own risk color
-            document.getElementById('panel-impact').className = `glass-panel rounded-lg p-stack-md border-l-4 severity-${cat.risk}`;
-            document.getElementById('panel-lookouts').className = `glass-panel rounded-lg p-stack-md border-l-4 severity-${cat.risk}`;
+            collapseInsightPanels();
+
+            // Match the Impact/Lookouts border color to this category's real risk level
+            // (was previously hardcoded to severity-high for every category)
+            ['insight-box-impact', 'insight-box-lookouts'].forEach(id => {
+                const box = document.getElementById(id);
+                box.classList.remove('severity-high', 'severity-medium', 'severity-low');
+                box.classList.add(`severity-${cat.risk}`);
+            });
 
             // Update Cards
             const cardsContainer = document.getElementById('cat-cards');
             cardsContainer.innerHTML = '';
             cat.cards.forEach(cardData => {
                 cardsContainer.innerHTML += `
-                    <div class="flip-card h-56 cursor-pointer group" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card h-48 cursor-pointer group" onclick="this.classList.toggle('flipped')">
                         <div class="flip-card-inner rounded-lg">
                             <div class="flip-card-front">
                                 <span class="material-symbols-outlined text-secondary mb-2">${cardData.icon}</span>
@@ -19085,9 +19346,10 @@
             });
 
             // Update Comic
+            const comicImg = document.getElementById('cat-comic-img');
             document.getElementById('cat-comic-title').textContent = cat.comicTitle || '';
-            document.getElementById('cat-comic-img').src = cat.comic;
-            document.getElementById('cat-comic-img').alt = `${cat.id}-comic`;
+            comicImg.src = cat.comic;
+            comicImg.alt = `${cat.id}-comic`;
 
             const scenes = cat.comicScenes || [];
             const rows = Math.max(1, Math.ceil(scenes.length / 2));
@@ -19106,12 +19368,14 @@
                     </div>`;
             }).join('');
 
+            comicImg.onload = positionComicOverlay;
+
             // Update Video
             const videoEl = document.getElementById('cat-video');
             videoEl.src = cat.video;
 
-            // Reset to Comic tab whenever a new category is selected
-            switchRightTab('comic');
+            // Outputs open on Video first, per the requested viewing order (Video -> Cards -> Comic)
+            switchRightTab('video');
 
             // Scroll the category + format area into view when the user picked it
             // (not on the initial render, to avoid an unwanted jump on page load)
@@ -19120,30 +19384,78 @@
                 if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
-
-        function updateFilters() {
-            const showHigh = document.getElementById('filter-high').checked;
-            const showMedium = document.getElementById('filter-medium').checked;
-
-            document.querySelectorAll('.tag-risk-high').forEach(el => el.classList.toggle('hidden-risk', !showHigh));
-            document.querySelectorAll('.tag-risk-medium').forEach(el => el.classList.toggle('hidden-risk', !showMedium));
-        }
     </script>
-</head>
 <body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased selection:bg-secondary/30">
 <!-- TopNavBar -->
 <header class="bg-surface/60 backdrop-blur-xl dark:bg-surface/60 font-display-lg text-title-lg docked full-width top-0 border-b border-white/10 shadow-sm transition-all duration-300 ease-in-out fixed top-0 w-full z-50 flex justify-between items-center px-container-padding h-16">
 <div class="flex items-center gap-4 cursor-pointer" onclick="backToHome()">
-<span class="font-display-lg text-headline-md font-bold text-on-surface tracking-tight">EULALens</span>
+<span class="brand-font text-headline-md text-on-surface tracking-tight">EULALens</span>
 </div>
 </header>
 <!-- Dashboard Tab -->
 <div class="flex-1 pt-16 w-full overflow-y-auto" id="dashboard-tab">
-<main class="w-full max-w-5xl mx-auto p-container-padding md:p-stack-lg">
-<header class="mb-stack-lg text-center mt-8">
-<h1 class="font-display-lg text-display-lg text-on-surface mb-4">EULALens</h1>
+<main class="w-full max-w-5xl mx-auto px-container-padding md:px-stack-lg pb-container-padding md:pb-stack-lg pt-2">
+<header class="mb-stack-md text-center relative overflow-hidden rounded-2xl pt-2 pb-6 md:pb-8 px-4">
+<div class="hero-grid" aria-hidden="true"></div>
+<div class="relative z-10">
+<p class="font-mono-tech text-xs text-secondary uppercase mb-2">AI-Powered EULA Analysis</p>
+<h1 class="brand-font text-display-lg text-on-surface mb-3">EULALens</h1>
 <p class="text-body-lg text-on-surface-variant font-body-lg max-w-2xl mx-auto">EULALens reads the terms of service you would normally skip and turns wordy clauses into straightforward summaries: comics, cue cards, and short videos. See exactly what you agree to.</p>
+</div>
 </header>
+<!-- Try it yourself: PDF upload -->
+<section class="mb-stack-lg glass-panel-strong rounded-xl p-container-padding shadow-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-sm border-b border-white/10 pb-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">upload_file</span> Try it yourself
+                </h2>
+<p class="text-on-surface-variant font-body-md mb-stack-md">Upload a EULA or terms-of-service PDF and see it broken down into plain-English categories, comics, cue cards, and videos.</p>
+<div class="upload-dropzone rounded-xl p-stack-md flex flex-col items-center justify-center text-center gap-2 cursor-pointer" id="upload-dropzone">
+<span class="material-symbols-outlined text-3xl text-secondary">cloud_upload</span>
+<p class="font-label-md text-on-surface">Drop a PDF here, or click to browse</p>
+<input accept="application/pdf" class="hidden" id="upload-input" type="file"/>
+</div>
+<div class="mt-stack-sm" id="upload-status"></div>
+</section>
+<!-- Sample EULAs -->
+<section class="mb-stack-lg glass-panel rounded-xl p-container-padding border border-white/5 shadow-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-sm border-b border-white/10 pb-4">…or explore a sample EULA</h2>
+<p class="text-on-surface-variant font-body-md mb-stack-md">Pick a real EULA below to explore its risk categories, cards, comics, and video explainers.</p>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-gutter">
+<button onclick="openDocumentView('zoom')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-2 text-center">
+<span class="material-symbols-outlined text-3xl text-secondary">gavel</span>
+<span class="font-label-md text-on-surface">Zoom</span>
+</button>
+<button onclick="openDocumentView('spotify')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-2 text-center">
+<span class="material-symbols-outlined text-3xl text-secondary">description</span>
+<span class="font-label-md text-on-surface">Spotify</span>
+</button>
+<button onclick="openDocumentView('windows11')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-2 text-center">
+<span class="material-symbols-outlined text-3xl text-secondary">window</span>
+<span class="font-label-md text-on-surface">Windows</span>
+</button>
+<button onclick="openDocumentView('steam')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-2 text-center">
+<span class="material-symbols-outlined text-3xl text-secondary">sports_esports</span>
+<span class="font-label-md text-on-surface">Steam</span>
+</button>
+<button onclick="openDocumentView('adobe')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-2 text-center">
+<span class="material-symbols-outlined text-3xl text-secondary">brush</span>
+<span class="font-label-md text-on-surface">Adobe</span>
+</button>
+<button onclick="openDocumentView('deepfake')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-2 text-center">
+<span class="material-symbols-outlined text-3xl text-secondary">face_retouching_off</span>
+<span class="font-label-md text-on-surface">Deepfake Challenge</span>
+</button>
+</div>
+</section>
+<!-- Learn more toggle -->
+<div class="flex justify-center mb-stack-lg">
+<button class="font-mono-tech text-xs uppercase tracking-wider text-secondary border border-secondary/30 rounded-full px-5 py-2.5 flex items-center gap-2 hover:bg-secondary/10 transition-colors" id="learn-more-toggle" onclick="toggleLearnMore()">
+<span class="toggle-label">Learn more</span>
+<span class="material-symbols-outlined text-sm chevron">expand_more</span>
+</button>
+</div>
+<div id="learn-more-panel">
+<div>
 <div class="glass-panel rounded-xl p-container-padding mb-stack-lg flex justify-center border border-white/5 shadow-lg">
 <div class="aspect-[21/9] w-full bg-surface-container/30 border border-white/10 rounded-lg flex items-center justify-center relative overflow-hidden">
 <img alt="Workflow diagram" class="w-full h-full object-contain" src="images/workflow.png"/>
@@ -19164,36 +19476,6 @@ multimodal alternatives for communicating their terms. In a study
 with 30 participants, the generated formats received favorable ratings for understandability and source accuracy and were strongly
 preferred over the original text. These findings suggest that multimodal AI explanations can improve how consequential terms are
 communicated to end users.
-</section>
-<section class="mb-stack-lg glass-panel rounded-xl p-container-padding border border-white/5 shadow-lg">
-<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-sm border-b border-white/10 pb-4">Try it yourself</h2>
-<p class="text-on-surface-variant font-body-md mb-stack-md">Pick a real EULA below to explore its risk categories, cards, comics, and video explainers.</p>
-<div class="grid grid-cols-2 md:grid-cols-3 gap-gutter">
-<button onclick="openDocumentView('zoom')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 transition-all flex flex-col items-center gap-2 text-center">
-<span class="material-symbols-outlined text-3xl text-secondary">gavel</span>
-<span class="font-label-md text-on-surface">Zoom</span>
-</button>
-<button onclick="openDocumentView('spotify')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 transition-all flex flex-col items-center gap-2 text-center">
-<span class="material-symbols-outlined text-3xl text-secondary">description</span>
-<span class="font-label-md text-on-surface">Spotify</span>
-</button>
-<button onclick="openDocumentView('windows11')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 transition-all flex flex-col items-center gap-2 text-center">
-<span class="material-symbols-outlined text-3xl text-secondary">window</span>
-<span class="font-label-md text-on-surface">Windows</span>
-</button>
-<button onclick="openDocumentView('steam')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 transition-all flex flex-col items-center gap-2 text-center">
-<span class="material-symbols-outlined text-3xl text-secondary">sports_esports</span>
-<span class="font-label-md text-on-surface">Steam</span>
-</button>
-<button onclick="openDocumentView('adobe')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 transition-all flex flex-col items-center gap-2 text-center">
-<span class="material-symbols-outlined text-3xl text-secondary">brush</span>
-<span class="font-label-md text-on-surface">Adobe</span>
-</button>
-<button onclick="openDocumentView('deepfake')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 transition-all flex flex-col items-center gap-2 text-center">
-<span class="material-symbols-outlined text-3xl text-secondary">face_retouching_off</span>
-<span class="font-label-md text-on-surface">Deepfake Challenge</span>
-</button>
-</div>
 </section>
 <div class="grid grid-cols-1 gap-gutter mb-stack-lg">
 <section class="glass-panel rounded-xl p-container-padding border border-white/5 shadow-lg">
@@ -19253,33 +19535,38 @@ communicated to end users.
 </div>
 </section>
 </div>
+</div>
+</div>
 </main>
 </div>
 <!-- Documents Tab -->
-<div class="hidden flex-1 pt-16" id="documents-tab">
+<div class="hidden flex-1 pt-16 h-screen overflow-hidden flex flex-col" id="documents-tab">
 <!-- Floating toolbar: stays pinned on screen regardless of scroll position -->
 <div class="fixed top-20 right-4 z-40 flex flex-col items-end gap-2" id="doc-toolbar">
 <div class="flex items-center gap-2">
-<button class="bg-surface-container/80 hover:bg-surface-variant text-on-surface px-4 py-2 rounded-md border border-white/10 transition-colors flex items-center gap-2 backdrop-blur-md shadow-lg" id="quick-index-btn" onclick="toggleQuickIndex()">
+<button class="bg-surface-container/80 hover:bg-surface-variant text-on-surface px-4 py-2 rounded-full border border-white/10 transition-colors flex items-center gap-2 backdrop-blur-md shadow-lg" id="categories-btn" onclick="openCategoriesDialog()">
+<span class="material-symbols-outlined text-secondary">view_stream</span> Categories
+</button>
+<button class="bg-surface-container/80 hover:bg-surface-variant text-on-surface px-4 py-2 rounded-full border border-white/10 transition-colors flex items-center gap-2 backdrop-blur-md shadow-lg" id="quick-index-btn" onclick="toggleQuickIndex()">
 <span class="material-symbols-outlined text-secondary">list</span> Quick Index
 </button>
-<button class="bg-secondary/20 hover:bg-secondary/30 text-secondary border border-secondary/30 px-4 py-2 rounded-md transition-colors flex items-center gap-2 backdrop-blur-md shadow-lg" id="try-another-btn" onclick="openTryAnotherDialog()">
+<button class="bg-secondary/20 hover:bg-secondary/30 text-secondary border border-secondary/30 px-4 py-2 rounded-full transition-colors flex items-center gap-2 backdrop-blur-md shadow-lg" id="try-another-btn" onclick="openTryAnotherDialog()">
 <span class="material-symbols-outlined">swap_horiz</span> Try another
 </button>
-<button class="bg-surface-container/80 hover:bg-surface-variant text-on-surface p-2 rounded-md border border-white/10 transition-colors flex items-center justify-center backdrop-blur-md shadow-lg" id="restart-tour-btn" onclick="startTutorial(true)" title="Replay tutorial">
+<button class="bg-surface-container/80 hover:bg-surface-variant text-on-surface p-2 rounded-full border border-white/10 transition-colors flex items-center justify-center backdrop-blur-md shadow-lg" id="restart-tour-btn" onclick="startTutorial(true)" title="Replay tutorial">
 <span class="material-symbols-outlined text-secondary text-lg">help</span>
 </button>
 </div>
 <!-- Collapsible Quick Index Dropdown -->
 <div class="glass-panel rounded-xl border border-white/5 w-[320px] max-w-[90vw] shadow-2xl" id="quick-index-dropdown">
-<div class="grid grid-cols-2 gap-2 overflow-y-auto max-h-[300px] pr-2" id="quick-index-grid">
+<div class="grid grid-cols-2 gap-2 overflow-y-auto max-h-[400px] pr-2" id="quick-index-grid">
 <!-- JS will populate quick index buttons here -->
 </div>
 </div>
 </div>
-<!-- Main Content (full width; no permanent left sidebar) -->
-<main class="flex-1 p-container-padding md:p-stack-lg overflow-y-auto min-w-0">
-<header class="mb-stack-lg border-b border-white/5 pb-stack-sm relative" id="doc-header">
+<!-- Main Content: lands directly on the output for the highest-risk category -->
+<main class="flex-1 p-container-padding md:p-stack-lg overflow-hidden min-w-0 flex flex-col min-h-0">
+<header class="mb-stack-sm border-b border-white/5 pb-stack-sm relative flex-shrink-0" id="doc-header">
 <button class="text-on-surface-variant hover:text-secondary flex items-center gap-1 text-sm mb-2 transition-colors" onclick="backToHome()">
 <span class="material-symbols-outlined text-sm">arrow_back</span> Back to Overview
 </button>
@@ -19288,118 +19575,91 @@ communicated to end users.
 <span id="doc-analysis-title">Document Analysis: Zoom TOS</span>
 </h1>
 </header>
-<!-- Interactive Category Cloud & Overview Bento -->
-<div class="mb-stack-lg">
-<!-- Cloud Area Full Width -->
-<div class="w-full glass-panel rounded-xl p-container-padding flex flex-col relative overflow-hidden">
-<div class="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent pointer-events-none"></div>
-<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center relative z-20 gap-4 mb-4 pt-1">
-<div>
-<h3 class="font-title-lg text-title-lg mb-stack-sm flex items-center gap-2 leading-normal">
-<span class="material-symbols-outlined text-secondary">scatter_plot</span>
-Category Constellation (3D)
-</h3>
-<p class="text-sm text-on-surface-variant">Select a topic on the globe to explore detailed analysis. Drag to rotate manually.</p>
-</div>
-<div class="flex items-center gap-4">
-<div class="flex gap-4 items-center bg-surface-container/30 px-4 py-2 rounded-lg border border-white/5" id="risk-filter-group">
-<span class="text-sm font-label-md text-on-surface-variant mr-2">Filter by Risk Level:</span>
-<label class="flex items-center gap-2 cursor-pointer text-sm font-label-md text-[#EF4444]">
-<input checked="" class="form-checkbox bg-surface-variant border-white/20 text-[#EF4444] rounded" id="filter-high" onchange="updateFilters()" type="checkbox"/>
-High
-</label>
-<label class="flex items-center gap-2 cursor-pointer text-sm font-label-md text-[#F59E0B]">
-<input checked="" class="form-checkbox bg-surface-variant border-white/20 text-[#F59E0B] rounded" id="filter-medium" onchange="updateFilters()" type="checkbox"/>
-Med
-</label>
-</div>
-<button class="bg-surface-container/60 hover:bg-surface-variant text-on-surface p-2 rounded-full border border-white/10 transition-colors flex items-center justify-center backdrop-blur-md" id="toggle-animation-btn" onclick="toggleAnimation()" title="Play/Pause Animation">
-<span class="material-symbols-outlined text-sm" id="pause-icon">pause</span>
-</button>
-</div>
-</div>
-<div class="category-cloud rounded-lg bg-surface-container/30 border border-white/5 relative z-10" id="category-cloud">
-<div class="globe-container" id="globe-container">
-<!-- JS will populate tags here -->
-</div>
-</div>
-</div>
-</div>
-<!-- Active Category Detail Area (Insights sidebar begins here, below the globe) -->
-<div class="glass-panel rounded-xl p-container-padding border-t-2 severity-high relative overflow-hidden transition-all duration-500" id="active-category">
+<!-- Active Category Detail Area -->
+<div class="glass-panel rounded-xl p-container-padding border-t-2 severity-high relative transition-all duration-500 flex-1 min-h-0 flex flex-col" id="active-category">
 <div class="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
 <span class="material-symbols-outlined text-9xl">gavel</span>
 </div>
-<div class="relative z-10 flex flex-col gap-stack-lg">
+<div class="relative z-10 flex flex-col gap-stack-sm flex-1 min-h-0">
 <!-- Title & Summary (full width) -->
-<div class="w-full">
+<div class="w-full flex-shrink-0">
 <div class="flex items-center gap-3 mb-stack-sm">
 <h2 class="font-headline-md text-headline-md text-on-surface" id="cat-title">System Requirements</h2>
-<span class="px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider border severity-high bg-severity-high shadow-[0_0_10px_rgba(239,68,68,0.2)]" id="cat-badge">High Risk</span>
+<span class="px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider border severity-high bg-severity-high shadow-[0_0_10px_rgba(217,112,94,0.2)]" id="cat-badge">High Risk</span>
 </div>
 <div class="prose prose-invert max-w-none text-on-surface-variant font-body-md leading-relaxed" id="cat-summary">
 <p class="">The user is fully responsible for maintaining compliant hardware and networks to use the service. Failures leading to service degradation are not Zoom's liability.</p>
 </div>
 </div>
-<!-- Insights (left) + Multimodal Tabs (right) -->
-<div class="flex flex-col lg:flex-row gap-stack-lg items-start">
-<!-- Left: Impact & Lookouts -->
-<div class="w-full lg:w-[280px] flex-shrink-0 flex flex-col gap-stack-md" id="insights-sidebar">
-<div class="glass-panel rounded-lg p-stack-md border-l-4 severity-high" id="panel-impact">
-<h4 class="font-label-md text-label-md text-on-surface flex items-center gap-2 mb-2">
-<span class="material-symbols-outlined text-sm">trending_up</span> Impact
-</h4>
-<ul class="list-disc list-inside text-sm text-on-surface-variant space-y-1" id="cat-impact">
-</ul>
-</div>
-<div class="glass-panel rounded-lg p-stack-md border-l-4 severity-high" id="panel-lookouts">
-<h4 class="font-label-md text-label-md text-on-surface flex items-center gap-2 mb-2">
-<span class="material-symbols-outlined text-sm">warning</span> Lookouts
-</h4>
-<ul class="list-disc list-inside text-sm text-on-surface-variant space-y-1" id="cat-lookouts">
-</ul>
-</div>
-</div>
-<!-- Right: Multimodal Tabs -->
-<div class="w-full flex-1 flex flex-col h-full min-w-0">
-<!-- Tab Headers (Comic first, then Cards) -->
-<div class="flex gap-2 border-b border-white/10 mb-stack-sm w-full">
-<button class="px-4 py-2 font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-eula" onclick="switchRightTab('eula')">
-<span class="material-symbols-outlined text-sm">article</span> Original EULA
+<!-- Main row: left insight accordion + right multimodal tabs -->
+<div class="w-full flex-1 min-h-0 flex flex-col md:flex-row gap-stack-md">
+<!-- LEFT: Impact & Lookouts as a click-to-reveal accordion -->
+<div class="w-full md:w-64 flex-shrink-0 flex flex-col gap-2" id="insight-accordion">
+<div class="glass-panel rounded-lg overflow-hidden border-l-4 severity-high" id="insight-box-impact">
+<button class="w-full flex items-center justify-between px-4 py-3 font-label-md text-on-surface hover:bg-white/5 transition-colors" id="insight-accbtn-impact" onclick="toggleInsightPanel('impact')">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-sm text-secondary">trending_up</span> Impact</span>
+<span class="material-symbols-outlined text-sm transition-transform duration-200" id="insight-chevron-impact">expand_more</span>
 </button>
-<button class="px-4 py-2 font-label-md border-b-2 border-secondary text-secondary bg-secondary/10 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-comic" onclick="switchRightTab('comic')">
-<span class="material-symbols-outlined text-sm">menu_book</span> Comic
+<div class="hidden px-4 pb-3" id="insight-panel-impact-wrap">
+<ul class="list-disc list-inside text-sm text-on-surface-variant space-y-1" id="cat-impact"></ul>
+</div>
+</div>
+<div class="glass-panel rounded-lg overflow-hidden border-l-4 severity-high" id="insight-box-lookouts">
+<button class="w-full flex items-center justify-between px-4 py-3 font-label-md text-on-surface hover:bg-white/5 transition-colors" id="insight-accbtn-lookouts" onclick="toggleInsightPanel('lookouts')">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-sm text-secondary">warning</span> Lookouts</span>
+<span class="material-symbols-outlined text-sm transition-transform duration-200" id="insight-chevron-lookouts">expand_more</span>
+</button>
+<div class="hidden px-4 pb-3" id="insight-panel-lookouts-wrap">
+<ul class="list-disc list-inside text-sm text-on-surface-variant space-y-1" id="cat-lookouts"></ul>
+</div>
+</div>
+</div>
+<!-- RIGHT: Multimodal Tabs: Video, Cards, Comic, then the original EULA text -->
+<div class="w-full flex-1 min-h-0 flex flex-col min-w-0">
+<div class="flex gap-2 border-b border-white/10 mb-stack-sm w-full flex-wrap flex-shrink-0">
+<button class="px-4 py-2 font-label-md border-b-2 border-secondary text-secondary bg-secondary/10 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-video" onclick="switchRightTab('video')">
+<span class="material-symbols-outlined text-sm">play_circle</span> Video
 </button>
 <button class="px-4 py-2 font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-cards" onclick="switchRightTab('cards')">
 <span class="material-symbols-outlined text-sm">style</span> Cards
 </button>
-<button class="px-4 py-2 font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-video" onclick="switchRightTab('video')">
-<span class="material-symbols-outlined text-sm">play_circle</span> Video
+<button class="px-4 py-2 font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-comic" onclick="switchRightTab('comic')">
+<span class="material-symbols-outlined text-sm">menu_book</span> Comic
+</button>
+<button class="px-4 py-2 font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-eula" onclick="switchRightTab('eula')">
+<span class="material-symbols-outlined text-sm">article</span> Original EULA
 </button>
 </div>
-<!-- Tab Content: Original EULA (Hidden initially) -->
-<div class="hidden flex-1 flex-col bg-surface-container/30 rounded-lg p-1 min-h-[300px] max-h-[500px] gap-1" id="right-tab-eula">
-<iframe class="w-full flex-1 min-h-[280px] rounded-md bg-white" id="cat-eula-frame" src=""></iframe>
-<a class="text-xs text-secondary hover:underline text-center py-1" id="cat-eula-fallback-link" href="#" target="_blank">PDF not loading? Open it directly</a>
-</div>
-<!-- Tab Content: Comic (visible by default) -->
-<div class="flex flex-1 flex-col bg-surface-container/30 rounded-lg p-3 min-h-[300px] max-h-[500px] overflow-y-auto gap-2" id="right-tab-comic">
-<p class="font-label-md font-bold text-on-surface" id="cat-comic-title"></p>
-<div class="comic-overlay-wrap">
-<img alt="Comic strip" class="w-full h-auto rounded-md object-contain border border-white/10 shadow-lg block" id="cat-comic-img" src=""/>
-<div class="comic-overlay-grid" id="cat-comic-overlay-grid"></div>
-</div>
-</div>
-<!-- Tab Content: Cards (Hidden initially) -->
-<div class="hidden flex-1 grid-cols-2 gap-2 p-2 bg-surface-container/30 rounded-lg min-h-[300px] overflow-y-auto max-h-[500px]" id="cat-cards">
-</div>
-<!-- Tab Content: Video (Hidden initially) -->
-<div class="hidden flex-1 bg-surface-container/30 rounded-lg p-2 items-center justify-center min-h-[300px]" id="right-tab-video">
-<div class="aspect-video w-full bg-black rounded-md flex items-center justify-center border border-white/10">
+<!-- Tab Content: Video (visible by default) -->
+<div class="flex flex-1 min-h-0 bg-surface-container/30 rounded-lg p-4 items-center justify-center" id="right-tab-video">
+<div class="aspect-video h-[92%] max-w-[92%] bg-black rounded-md flex items-center justify-center border border-white/10">
 <video class="w-full h-full rounded-md" controls="" id="cat-video"></video>
 </div>
 </div>
+<!-- Tab Content: Cards (Hidden initially) -->
+<div class="hidden flex-1 min-h-0 grid-cols-2 gap-3 p-4 bg-surface-container/30 rounded-lg overflow-y-auto" id="cat-cards">
 </div>
+<!-- Tab Content: Comic (Hidden initially, sized to fit within one screen) -->
+<div class="hidden flex-1 min-h-0 flex-col bg-surface-container/30 rounded-lg p-5 gap-2" id="right-tab-comic">
+<p class="font-label-md font-bold text-on-surface" id="cat-comic-title"></p>
+<div class="comic-overlay-wrap">
+<img alt="Comic strip" class="rounded-md object-contain border border-white/10 shadow-lg block" id="cat-comic-img" src=""/>
+<div class="comic-overlay-grid" id="cat-comic-overlay-grid"></div>
+</div>
+</div>
+<!-- Tab Content: Original EULA (Hidden initially, sized to fit within one screen) -->
+<div class="hidden flex-1 min-h-0 flex-col bg-surface-container/30 rounded-lg p-1 gap-1" id="right-tab-eula">
+<iframe class="w-full flex-1 rounded-md bg-white" id="cat-eula-frame" src=""></iframe>
+<a class="text-xs text-secondary hover:underline text-center py-1" id="cat-eula-fallback-link" href="#" target="_blank">PDF not loading? Open it directly</a>
+</div>
+</div>
+</div>
+<!-- Next Category -->
+<div class="flex justify-end flex-shrink-0">
+<button class="bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/30 px-5 py-2.5 rounded-md font-label-md transition-colors flex items-center gap-2" id="next-category-btn" onclick="nextCategory()">
+Next Category
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
 </div>
 </div>
 </div>
@@ -19416,6 +19676,28 @@ Med
 <div class="tutorial-btn-group">
 <button class="tutorial-btn tutorial-btn-back" id="tutorial-back-btn" onclick="prevTutorialStep()">Back</button>
 <button class="tutorial-btn tutorial-btn-next" id="tutorial-next-btn" onclick="nextTutorialStep()">Next</button>
+</div>
+</div>
+</div>
+<!-- Categories Modal (replaces the old 3D globe): two risk-level ticker panels -->
+<div class="hidden fixed inset-0 z-[60] items-center justify-center bg-black/60 backdrop-blur-sm p-4" id="categories-modal">
+<div class="glass-panel-strong rounded-xl p-container-padding w-full max-w-3xl">
+<div class="flex justify-between items-center mb-stack-md">
+<h3 class="font-title-lg text-title-lg text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">view_stream</span> All Categories
+</h3>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors" onclick="closeCategoriesDialog()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<p class="text-sm text-on-surface-variant mb-stack-md">Sorted by risk level. Click any category to jump straight to its breakdown.</p>
+<div class="mb-stack-md">
+<p class="font-mono-tech text-xs uppercase tracking-wider text-[#D9705E] mb-2">High Risk</p>
+<div id="ticker-high"></div>
+</div>
+<div>
+<p class="font-mono-tech text-xs uppercase tracking-wider text-[#D9A25A] mb-2">Medium Risk</p>
+<div id="ticker-medium"></div>
 </div>
 </div>
 </div>
