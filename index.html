@@ -5,6 +5,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>EULALens</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
@@ -720,24 +721,104 @@
             });
         }
 
-        function handleUploadedFile(file) {
+        const LIVE_API_BASE = 'https://gradually-smell-went-sister.trycloudflare.com';
+
+        async function extractPdfText(file) {
+            if (!window.pdfjsLib) {
+                throw new Error('PDF reader failed to load.');
+            }
+
+            pdfjsLib.GlobalWorkerOptions.workerSrc =
+                'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({
+                data: new Uint8Array(arrayBuffer)
+            }).promise;
+
+            let text = '';
+
+            for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+                const page = await pdf.getPage(pageNumber);
+                const content = await page.getTextContent();
+
+                const pageText = content.items
+                    .map(item => item.str)
+                    .join(' ');
+
+                text += `\n\n${pageText}`;
+            }
+
+            if (!text.trim()) {
+                throw new Error(
+                    'No selectable text was found in this PDF. It may be scanned, image-only, or encrypted.'
+                );
+            }
+
+            return text.trim();
+        }
+
+        async function handleUploadedFile(file) {
             const status = document.getElementById('upload-status');
-            if (!file || file.type !== 'application/pdf') {
-                status.innerHTML = `<p class="text-sm text-[#D9705E]">Please upload a PDF file.</p>`;
+
+            if (!file || (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf'))) {
+                status.innerHTML =
+                    `<p class="text-sm text-[#D9705E]">Please upload a PDF file.</p>`;
                 return;
             }
-            status.innerHTML = `
-                <div class="flex items-center gap-2 text-sm text-on-surface-variant">
-                    <span class="material-symbols-outlined text-secondary animate-spin text-base">progress_activity</span>
-                    Analyzing "${file.name}"…
-                </div>`;
-            setTimeout(() => {
+
+            try {
                 status.innerHTML = `
-                    <div class="glass-panel rounded-lg p-stack-md border-l-4 severity-medium text-sm text-on-surface-variant">
-                        <p class="font-label-md text-on-surface mb-1">This demo doesn't run live analysis yet</p>
-                        <p>Custom PDF processing needs the full EULALens pipeline, which isn't available in this static preview. Try one of the sample EULAs below to see the complete experience.</p>
+                    <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-secondary animate-spin text-base">progress_activity</span>
+                        Extracting text from "${file.name}"…
                     </div>`;
-            }, 1400);
+
+                const text = await extractPdfText(file);
+
+                status.innerHTML = `
+                    <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-secondary animate-spin text-base">progress_activity</span>
+                        Analyzing "${file.name}" with EULALens…
+                    </div>`;
+
+                const response = await fetch(`${LIVE_API_BASE}/api/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fileName: file.name,
+                        text
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || `Analysis failed (${response.status}).`);
+                }
+
+                console.log('Live EULALens analysis:', result);
+
+                const analysis = result.analysis || result;
+                const count = analysis.categories?.length || 0;
+
+                status.innerHTML = `
+                    <div class="glass-panel rounded-lg p-stack-md border-l-4 severity-low text-sm text-on-surface-variant">
+                        <p class="font-label-md text-on-surface mb-1">Analysis complete</p>
+                        <p>EULALens found ${count} categor${count === 1 ? 'y' : 'ies'} in "${file.name}".</p>
+                    </div>`;
+
+            } catch (error) {
+                console.error('Live PDF analysis failed:', error);
+
+                status.innerHTML = `
+                    <div class="glass-panel rounded-lg p-stack-md border-l-4 severity-high text-sm text-on-surface-variant">
+                        <p class="font-label-md text-on-surface mb-1">Analysis failed</p>
+                        <p>${error.message || 'Could not analyze this PDF.'}</p>
+                    </div>`;
+            }
         }
 
         // --- Onboarding tutorial ---
