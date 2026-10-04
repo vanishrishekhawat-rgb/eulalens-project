@@ -758,6 +758,15 @@
             return text.trim();
         }
 
+        function convertLiveCard(card) {
+            return {
+                icon: 'help_outline',
+                front: card.question || card.frontDetail || card.answer || 'What should I know?',
+                backTitle: card.backTitle || card.answer || 'Key point',
+                backDetail: card.backDetail || card.frontDetail || ''
+            };
+        }
+
         function convertLiveCategory(cat) {
             const impact = cat?.lenses?.impact;
 
@@ -780,7 +789,11 @@
                 comic: '',
                 comicTitle: '',
                 comicScenes: [],
-                video: ''
+                video: '',
+                sourceSegments: Array.isArray(cat.sourceSegments)
+                    ? cat.sourceSegments
+                    : [],
+                liveSourceCategory: cat
             };
         }
 
@@ -834,6 +847,56 @@
                 if (!count) {
                     throw new Error('EULALens did not find any categories in this document.');
                 }
+
+                // Generate source-grounded cue cards for all live categories.
+                status.innerHTML = `
+                    <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-secondary animate-spin text-base">progress_activity</span>
+                        Generating cue cards for ${count} categories…
+                    </div>`;
+
+                const cardsResponse = await fetch(`${LIVE_API_BASE}/api/categories/cards/batch`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        documentTitle: file.name,
+                        categories: analysis.categories || []
+                    })
+                });
+
+                const cardsResult = await cardsResponse.json();
+
+                if (!cardsResponse.ok) {
+                    throw new Error(
+                        cardsResult.error ||
+                        `Cue-card generation failed (${cardsResponse.status}).`
+                    );
+                }
+
+                const cardResults = Array.isArray(cardsResult.results)
+                    ? cardsResult.results
+                    : [];
+
+                cardResults.forEach(cardResult => {
+                    if (!cardResult.ok || !Array.isArray(cardResult.cards)) {
+                        console.warn(
+                            'Cue cards failed for category:',
+                            cardResult.categoryId,
+                            cardResult.error
+                        );
+                        return;
+                    }
+
+                    const liveCategory = liveCategories.find(
+                        cat => cat.id === cardResult.categoryId
+                    );
+
+                    if (liveCategory) {
+                        liveCategory.cards = cardResult.cards.map(convertLiveCard);
+                    }
+                });
 
                 // Switch only the active in-memory dataset to this uploaded document.
                 // The six fixed example datasets remain unchanged.
