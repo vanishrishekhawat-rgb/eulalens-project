@@ -758,6 +758,32 @@
             return text.trim();
         }
 
+        function convertLiveCategory(cat) {
+            const impact = cat?.lenses?.impact;
+
+            return {
+                id: cat.id || `live-${Date.now()}`,
+                name: cat.title || 'EULA Category',
+                risk: ['high', 'medium', 'low'].includes(cat.severity)
+                    ? cat.severity
+                    : 'medium',
+                summary: cat.summary || '',
+                impact: Array.isArray(impact)
+                    ? impact
+                    : impact
+                        ? [impact]
+                        : [],
+                lookouts: Array.isArray(cat?.lenses?.lookouts)
+                    ? cat.lenses.lookouts
+                    : [],
+                cards: [],
+                comic: '',
+                comicTitle: '',
+                comicScenes: [],
+                video: ''
+            };
+        }
+
         async function handleUploadedFile(file) {
             const status = document.getElementById('upload-status');
 
@@ -802,7 +828,38 @@
                 console.log('Live EULALens analysis:', result);
 
                 const analysis = result.analysis || result;
-                const count = analysis.categories?.length || 0;
+                const liveCategories = (analysis.categories || []).map(convertLiveCategory);
+                const count = liveCategories.length;
+
+                if (!count) {
+                    throw new Error('EULALens did not find any categories in this document.');
+                }
+
+                // Switch only the active in-memory dataset to this uploaded document.
+                // The six fixed example datasets remain unchanged.
+                activeDocument = 'live';
+                categories = liveCategories;
+
+                // Show the uploaded PDF in the Original EULA tab.
+                const livePdfUrl = URL.createObjectURL(file);
+                const eulaFrame = document.getElementById('cat-eula-frame');
+                const fallbackLink = document.getElementById('cat-eula-fallback-link');
+
+                if (eulaFrame) eulaFrame.src = livePdfUrl;
+                if (fallbackLink) fallbackLink.href = livePdfUrl;
+
+                const titleEl = document.getElementById('doc-analysis-title');
+                if (titleEl) {
+                    titleEl.textContent = `Document Analysis: ${file.name}`;
+                }
+
+                renderQuickIndex();
+                renderCategoryTickers();
+
+                const firstCategory = getSortedCategories()[0];
+                if (firstCategory) {
+                    updateCategoryDetails(firstCategory, { scroll: true });
+                }
 
                 status.innerHTML = `
                     <div class="glass-panel rounded-lg p-stack-md border-l-4 severity-low text-sm text-on-surface-variant">
