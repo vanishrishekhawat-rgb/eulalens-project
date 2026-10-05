@@ -721,7 +721,7 @@
             });
         }
 
-        const LIVE_API_BASE = 'https://oils-twelve-gas-dana.trycloudflare.com';
+        const LIVE_API_BASE = 'https://interfaces-yen-journalists-connections.trycloudflare.com';
 
         async function extractPdfText(file) {
             if (!window.pdfjsLib) {
@@ -786,6 +786,7 @@
                     ? cat.lenses.lookouts
                     : [],
                 cards: [],
+                cardsStatus: 'generating',
                 comic: '',
                 comicTitle: '',
                 comicScenes: [],
@@ -848,56 +849,6 @@
                     throw new Error('EULALens did not find any categories in this document.');
                 }
 
-                // Generate source-grounded cue cards for all live categories.
-                status.innerHTML = `
-                    <div class="flex items-center gap-2 text-sm text-on-surface-variant">
-                        <span class="material-symbols-outlined text-secondary animate-spin text-base">progress_activity</span>
-                        Generating cue cards for ${count} categories…
-                    </div>`;
-
-                const cardsResponse = await fetch(`${LIVE_API_BASE}/api/categories/cards/batch`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        documentTitle: file.name,
-                        categories: analysis.categories || []
-                    })
-                });
-
-                const cardsResult = await cardsResponse.json();
-
-                if (!cardsResponse.ok) {
-                    throw new Error(
-                        cardsResult.error ||
-                        `Cue-card generation failed (${cardsResponse.status}).`
-                    );
-                }
-
-                const cardResults = Array.isArray(cardsResult.results)
-                    ? cardsResult.results
-                    : [];
-
-                cardResults.forEach(cardResult => {
-                    if (!cardResult.ok || !Array.isArray(cardResult.cards)) {
-                        console.warn(
-                            'Cue cards failed for category:',
-                            cardResult.categoryId,
-                            cardResult.error
-                        );
-                        return;
-                    }
-
-                    const liveCategory = liveCategories.find(
-                        cat => cat.id === cardResult.categoryId
-                    );
-
-                    if (liveCategory) {
-                        liveCategory.cards = cardResult.cards.map(convertLiveCard);
-                    }
-                });
-
                 // Switch only the active in-memory dataset to this uploaded document.
                 // The six fixed example datasets remain unchanged.
                 activeDocument = 'live';
@@ -930,6 +881,71 @@
                 document.getElementById('dashboard-tab').classList.add('hidden');
                 document.getElementById('documents-tab').classList.remove('hidden');
                 window.scrollTo({ top: 0, behavior: 'instant' });
+
+                // Generate cue cards in the background AFTER opening the results page.
+                // Do not await this request: the user can inspect the analysis immediately.
+                fetch(`${LIVE_API_BASE}/api/categories/cards/batch`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        documentTitle: file.name,
+                        categories: analysis.categories || []
+                    })
+                })
+                .then(async cardsResponse => {
+                    const cardsResult = await cardsResponse.json();
+
+                    if (!cardsResponse.ok) {
+                        throw new Error(
+                            cardsResult.error ||
+                            `Cue-card generation failed (${cardsResponse.status}).`
+                        );
+                    }
+
+                    const cardResults = Array.isArray(cardsResult.results)
+                        ? cardsResult.results
+                        : [];
+
+                    cardResults.forEach(cardResult => {
+                        if (!cardResult.ok || !Array.isArray(cardResult.cards)) {
+                            console.warn(
+                                'Cue cards failed for category:',
+                                cardResult.categoryId,
+                                cardResult.error
+                            );
+                            return;
+                        }
+
+                        const liveCategory = liveCategories.find(
+                            cat => cat.id === cardResult.categoryId
+                        );
+
+                        if (liveCategory) {
+                            liveCategory.cards =
+                                cardResult.cards.map(convertLiveCard);
+                            liveCategory.cardsStatus = 'ready';
+                        }
+                    });
+
+                    // Refresh the currently displayed category so its cards appear.
+                    const activeCategoryId =
+                        document.getElementById('active-category')?.dataset.catId;
+
+                    const activeLiveCategory = liveCategories.find(
+                        cat => cat.id === activeCategoryId
+                    );
+
+                    if (activeLiveCategory) {
+                        updateCategoryDetails(activeLiveCategory, { scroll: false });
+                    }
+
+                    console.log('Live cue cards generated successfully.');
+                })
+                .catch(cardError => {
+                    console.error('Live cue-card generation failed:', cardError);
+                });
 
                 status.innerHTML = `
                     <div class="glass-panel rounded-lg p-stack-md border-l-4 severity-low text-sm text-on-surface-variant">
@@ -19535,6 +19551,15 @@
             // Update Cards
             const cardsContainer = document.getElementById('cat-cards');
             cardsContainer.innerHTML = '';
+
+            if (cat.cardsStatus === 'generating' && !cat.cards.length) {
+                cardsContainer.innerHTML = `
+                    <div class="col-span-full flex items-center justify-center gap-2 py-10 text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-secondary animate-spin">progress_activity</span>
+                        Generating cue cards…
+                    </div>`;
+            }
+
             cat.cards.forEach(cardData => {
                 cardsContainer.innerHTML += `
                     <div class="flip-card h-48 cursor-pointer group" onclick="this.classList.toggle('flipped')">
