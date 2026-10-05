@@ -721,7 +721,7 @@
             });
         }
 
-        const LIVE_API_BASE = 'https://amenities-cms-criterion-hugh.trycloudflare.com';
+        const LIVE_API_BASE = 'https://oils-twelve-gas-dana.trycloudflare.com';
 
         async function extractPdfText(file) {
             if (!window.pdfjsLib) {
@@ -921,8 +921,15 @@
 
                 const firstCategory = getSortedCategories()[0];
                 if (firstCategory) {
-                    updateCategoryDetails(firstCategory, { scroll: true });
+                    updateCategoryDetails(firstCategory, { scroll: false });
                 }
+
+                // Open the SAME document-analysis interface used by the fixed samples.
+                // Do not call openDocumentView('live'), because that calls switchDocument()
+                // and could replace the generated live categories.
+                document.getElementById('dashboard-tab').classList.add('hidden');
+                document.getElementById('documents-tab').classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'instant' });
 
                 status.innerHTML = `
                     <div class="glass-panel rounded-lg p-stack-md border-l-4 severity-low text-sm text-on-surface-variant">
