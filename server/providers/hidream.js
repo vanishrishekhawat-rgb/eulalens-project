@@ -106,10 +106,20 @@ export async function renderComicWithHiDream({ category, comic, documentTitle } 
     throw httpError(502, 'HiDream did not return an image URL.');
   }
 
+  // Serve generated artwork through the EULALens backend rather than
+  // exposing the internal HiDream service on port 5052.
+  const imageFilename = payload.imagePath
+    ? payload.imagePath.split('/').pop()
+    : String(payload.imageUrl || '').split('/').pop();
+
+  const publicImageUrl = imageFilename
+    ? `/api/comic-assets/${encodeURIComponent(imageFilename)}`
+    : '';
+
   return {
     categoryId: payload.categoryId || category?.id || comic?.categoryId || 'category',
     image: {
-      imageUrl: resolveImageUrl(payload.imageUrl, baseUrl),
+      imageUrl: publicImageUrl,
       imagePath: payload.imagePath || '',
       prompt: payload.prompt || prompt,
       refinedPrompt: payload.refinedPrompt || '',

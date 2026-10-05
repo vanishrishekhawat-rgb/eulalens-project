@@ -583,6 +583,231 @@
             closeCategoriesDialog();
         }
 
+        function renderComicForCategory(cat) {
+            const comicImg = document.getElementById('cat-comic-img');
+            const comicTitle = document.getElementById('cat-comic-title');
+            const overlayGrid = document.getElementById('cat-comic-overlay-grid');
+
+            if (!comicImg || !comicTitle || !overlayGrid || !cat) return;
+
+            // Live comic has not started yet.
+            if (activeDocument === 'live' && cat.comicStatus === 'idle') {
+                comicTitle.textContent = 'Comic';
+                comicImg.removeAttribute('src');
+                comicImg.alt = 'Comic not generated yet';
+                overlayGrid.innerHTML = `
+                    <div class="col-span-full flex items-center justify-center h-full text-sm text-on-surface-variant">
+                        Open the Comic tab to generate this explanation.
+                    </div>`;
+                return;
+            }
+
+            if (activeDocument === 'live' &&
+                cat.comicStatus === 'generating-story') {
+                comicTitle.textContent = 'Generating comic story…';
+                comicImg.removeAttribute('src');
+                overlayGrid.innerHTML = `
+                    <div class="col-span-full flex items-center justify-center gap-2 h-full text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-secondary animate-spin">progress_activity</span>
+                        Qwen is creating the comic scenario…
+                    </div>`;
+                return;
+            }
+
+            if (activeDocument === 'live' &&
+                cat.comicStatus === 'rendering-image') {
+                comicTitle.textContent =
+                    cat.comicTitle || 'Rendering comic artwork…';
+                comicImg.removeAttribute('src');
+                overlayGrid.innerHTML = `
+                    <div class="col-span-full flex items-center justify-center gap-2 h-full text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-secondary animate-spin">progress_activity</span>
+                        HiDream is rendering the comic artwork…
+                    </div>`;
+                return;
+            }
+
+            if (activeDocument === 'live' &&
+                cat.comicStatus === 'error') {
+                comicTitle.textContent = 'Comic generation failed';
+                comicImg.removeAttribute('src');
+                overlayGrid.innerHTML = `
+                    <div class="col-span-full flex items-center justify-center h-full px-6 text-center text-sm text-[#D9705E]">
+                        ${cat.comicError || 'Could not generate this comic.'}
+                    </div>`;
+                return;
+            }
+
+            // Ready live comics and all fixed sample comics use the
+            // original EULALens comic presentation.
+            comicTitle.textContent = cat.comicTitle || '';
+            comicImg.src = cat.comic || '';
+            comicImg.alt = `${cat.id}-comic`;
+
+            const scenes = cat.comicScenes || [];
+            const rows = Math.max(1, Math.ceil(scenes.length / 2));
+
+            overlayGrid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+            overlayGrid.innerHTML = scenes.map(scene => {
+                const slots = scene.slots || scene.bubbles || [];
+
+                const bubbles = slots.map(slot => `
+                    <div class="comic-bubble kind-${slot.kind || 'speech'} pos-${slot.position || 'top-left'}">
+                        ${slot.text || ''}
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="comic-overlay-cell">
+                        ${bubbles}
+                        <div class="comic-caption-bar">
+                            <span class="cap-title">${scene.title || ''}</span>${scene.caption || ''}
+                        </div>
+                    </div>`;
+            }).join('');
+
+            comicImg.onload = positionComicOverlay;
+        }
+
+        async function ensureLiveComic(cat) {
+            // Fixed sample documents keep their existing pre-generated comics.
+            if (activeDocument !== 'live' || !cat) return;
+
+            // Do not regenerate a finished or currently-running comic.
+            if (cat.comicStatus === 'ready' ||
+                cat.comicStatus === 'generating-story' ||
+                cat.comicStatus === 'rendering-image') {
+                return;
+            }
+
+            try {
+                cat.comicStatus = 'generating-story';
+
+                // Refresh the currently visible category so the Comic tab
+                // can show the generation state.
+                if (document.getElementById('active-category')?.dataset.catId === cat.id) {
+                    renderComicForCategory(cat);
+                }
+
+                const comicResponse = await fetch(
+                    `${LIVE_API_BASE}/api/categories/comic`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            documentTitle:
+                                document.getElementById('doc-analysis-title')
+                                    ?.textContent
+                                    ?.replace(/^Document Analysis:\s*/, '') ||
+                                'Uploaded EULA',
+                            category: cat.liveSourceCategory
+                        })
+                    }
+                );
+
+                const comicResult = await comicResponse.json();
+
+                if (!comicResponse.ok) {
+                    throw new Error(
+                        comicResult.error ||
+                        `Comic generation failed (${comicResponse.status}).`
+                    );
+                }
+
+                const comicPayload = comicResult.comic || comicResult;
+
+                let selectedComic = comicPayload;
+
+                if (Array.isArray(comicPayload?.comics)) {
+                    selectedComic =
+                        comicPayload.comics.find(
+                            comic =>
+                                comic.id === comicPayload.selectedComicId
+                        ) ||
+                        comicPayload.comics[0];
+                }
+
+                if (!selectedComic) {
+                    throw new Error('Qwen did not return a usable comic.');
+                }
+
+                cat.comicTitle =
+                    selectedComic.title ||
+                    selectedComic.scenarioTitle ||
+                    'EULA Comic';
+
+                cat.comicScenes =
+                    selectedComic.scenes ||
+                    selectedComic.panels ||
+                    [];
+
+                cat.comicStatus = 'rendering-image';
+
+                if (document.getElementById('active-category')?.dataset.catId === cat.id) {
+                    renderComicForCategory(cat);
+                }
+
+                const renderResponse = await fetch(
+                    `${LIVE_API_BASE}/api/categories/comic/render`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            documentTitle:
+                                document.getElementById('doc-analysis-title')
+                                    ?.textContent
+                                    ?.replace(/^Document Analysis:\s*/, '') ||
+                                'Uploaded EULA',
+                            category: cat.liveSourceCategory,
+                            comic: selectedComic
+                        })
+                    }
+                );
+
+                const renderResult = await renderResponse.json();
+
+                if (!renderResponse.ok) {
+                    throw new Error(
+                        renderResult.error ||
+                        `Comic rendering failed (${renderResponse.status}).`
+                    );
+                }
+
+                const imageUrl = renderResult?.image?.imageUrl;
+
+                if (!imageUrl) {
+                    throw new Error('HiDream did not return a comic image.');
+                }
+
+                cat.comic = imageUrl.startsWith('http')
+                    ? imageUrl
+                    : `${LIVE_API_BASE}${imageUrl}`;
+
+                cat.comicStatus = 'ready';
+
+                // Only refresh the UI if the user is still looking at
+                // this category. Otherwise the result remains cached.
+                if (document.getElementById('active-category')?.dataset.catId === cat.id) {
+                    renderComicForCategory(cat);
+                }
+
+            } catch (error) {
+                console.error('Live comic generation failed:', error);
+
+                cat.comicStatus = 'error';
+                cat.comicError =
+                    error.message || 'Could not generate this comic.';
+
+                if (document.getElementById('active-category')?.dataset.catId === cat.id) {
+                    renderComicForCategory(cat);
+                }
+            }
+        }
+
         function switchRightTab(tab) {
             const panels = { eula: document.getElementById('right-tab-eula'), cards: document.getElementById('cat-cards'), comic: document.getElementById('right-tab-comic'), video: document.getElementById('right-tab-video') };
             const buttons = { eula: document.getElementById('tabbtn-eula'), cards: document.getElementById('tabbtn-cards'), comic: document.getElementById('tabbtn-comic'), video: document.getElementById('tabbtn-video') };
@@ -611,6 +836,20 @@
                 // Container was hidden (display:none) while the image loaded, so
                 // dimensions weren't available then. Recompute now that it's visible.
                 requestAnimationFrame(positionComicOverlay);
+
+                // For uploaded PDFs, generate the comic only when the user
+                // actually opens the Comic tab. Fixed sample comics remain unchanged.
+                if (activeDocument === 'live') {
+                    const catId =
+                        document.getElementById('active-category')?.dataset.catId;
+
+                    const liveCategory =
+                        categories.find(cat => cat.id === catId);
+
+                    if (liveCategory) {
+                        ensureLiveComic(liveCategory);
+                    }
+                }
             }
         }
 
@@ -790,6 +1029,7 @@
                 comic: '',
                 comicTitle: '',
                 comicScenes: [],
+                comicStatus: 'idle',
                 video: '',
                 sourceSegments: Array.isArray(cat.sourceSegments)
                     ? cat.sourceSegments
@@ -19579,29 +19819,7 @@
             });
 
             // Update Comic
-            const comicImg = document.getElementById('cat-comic-img');
-            document.getElementById('cat-comic-title').textContent = cat.comicTitle || '';
-            comicImg.src = cat.comic;
-            comicImg.alt = `${cat.id}-comic`;
-
-            const scenes = cat.comicScenes || [];
-            const rows = Math.max(1, Math.ceil(scenes.length / 2));
-            const overlayGrid = document.getElementById('cat-comic-overlay-grid');
-            overlayGrid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-            overlayGrid.innerHTML = scenes.map(s => {
-                const bubbles = (s.slots || []).map(slot => `
-                    <div class="comic-bubble kind-${slot.kind} pos-${slot.position}">${slot.text}</div>
-                `).join('');
-                return `
-                    <div class="comic-overlay-cell">
-                        ${bubbles}
-                        <div class="comic-caption-bar">
-                            <span class="cap-title">${s.title}</span>${s.caption}
-                        </div>
-                    </div>`;
-            }).join('');
-
-            comicImg.onload = positionComicOverlay;
+            renderComicForCategory(cat);
 
             // Update Video
             const videoEl = document.getElementById('cat-video');

@@ -31,6 +31,13 @@ app.use(cors());
 app.use(express.json({ limit: `${maxAnalyzePayloadMb}mb` }));
 app.use('/api/presentation/assets', express.static(presentationPrecomputedRoot));
 
+// Serve generated HiDream comic images through the EULALens backend.
+// This allows remote browsers to access images without exposing port 5052.
+const hiDreamOutputRoot =
+  '/data/d1/vanishri/EULALens/Data/experiments/image-generation/hidream-o1/app-renders';
+
+app.use('/api/comic-assets', express.static(hiDreamOutputRoot));
+
 app.get('/api/health', (_req, res) => {
   res.json(health());
 });
