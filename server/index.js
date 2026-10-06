@@ -17,6 +17,15 @@ import { errorPayload, getErrorStatus } from './http.js';
 
 const app = express();
 
+// In-memory jobs for long-running live comic generation.
+// The browser starts a job, then polls its status so Cloudflare does not
+// have to keep one HTTP request open while Qwen and HiDream are running.
+const comicJobs = new Map();
+
+function createComicJobId() {
+  return `comic-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
 function asyncRoute(handler) {
   return async (req, res, next) => {
     try {
@@ -57,6 +66,80 @@ app.post('/api/categories/cards/batch', asyncRoute(async (req, res) => {
 app.post('/api/categories/comic', asyncRoute(async (req, res) => {
   res.json(await generateCategoryComic(req.body));
 }));
+
+app.post('/api/categories/comic/start', (req, res) => {
+  const jobId = createComicJobId();
+
+  comicJobs.set(jobId, {
+    jobId,
+    status: 'queued',
+    createdAt: Date.now()
+  });
+
+  // Return immediately. Qwen and HiDream continue after the response.
+  res.status(202).json({
+    jobId,
+    status: 'queued'
+  });
+
+  void (async () => {
+    try {
+      const job = comicJobs.get(jobId);
+      job.status = 'generating-story';
+
+      const comicResult = await generateCategoryComic(req.body);
+      const comicPayload = comicResult.comic || comicResult;
+
+      let selectedComic = comicPayload;
+
+      if (Array.isArray(comicPayload?.comics)) {
+        selectedComic =
+          comicPayload.comics.find(
+            comic => comic.id === comicPayload.selectedComicId
+          ) ||
+          comicPayload.comics[0];
+      }
+
+      if (!selectedComic) {
+        throw new Error('Qwen did not return a usable comic.');
+      }
+
+      job.status = 'rendering-image';
+      job.comic = selectedComic;
+
+      const renderResult = await renderCategoryComicImage({
+        ...req.body,
+        comic: selectedComic
+      });
+
+      job.status = 'ready';
+      job.render = renderResult;
+      job.completedAt = Date.now();
+    } catch (error) {
+      const job = comicJobs.get(jobId);
+
+      if (job) {
+        job.status = 'error';
+        job.error = error?.message || 'Comic generation failed.';
+        job.completedAt = Date.now();
+      }
+
+      console.error(`Comic job ${jobId} failed:`, error);
+    }
+  })();
+});
+
+app.get('/api/categories/comic/jobs/:jobId', (req, res) => {
+  const job = comicJobs.get(req.params.jobId);
+
+  if (!job) {
+    return res.status(404).json({
+      error: 'Comic job not found.'
+    });
+  }
+
+  return res.json(job);
+});
 
 app.post('/api/categories/video/script', asyncRoute(async (req, res) => {
   res.json(await generateCategoryVideoScript(req.body));

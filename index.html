@@ -680,119 +680,146 @@
                 return;
             }
 
-            try {
-                cat.comicStatus = 'generating-story';
-
-                // Refresh the currently visible category so the Comic tab
-                // can show the generation state.
+            const refreshComicUI = () => {
                 if (document.getElementById('active-category')?.dataset.catId === cat.id) {
                     renderComicForCategory(cat);
                 }
+            };
 
-                const comicResponse = await fetch(
-                    `${LIVE_API_BASE}/api/categories/comic`,
+            try {
+                cat.comicStatus = 'generating-story';
+                cat.comicError = '';
+                refreshComicUI();
+
+                const documentTitle =
+                    document.getElementById('doc-analysis-title')
+                        ?.textContent
+                        ?.replace(/^Document Analysis:\s*/, '') ||
+                    'Uploaded EULA';
+
+                // Start the long-running Qwen + HiDream job.
+                // This endpoint returns immediately with a job ID.
+                const startResponse = await fetch(
+                    `${LIVE_API_BASE}/api/categories/comic/start`,
                     {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            documentTitle:
-                                document.getElementById('doc-analysis-title')
-                                    ?.textContent
-                                    ?.replace(/^Document Analysis:\s*/, '') ||
-                                'Uploaded EULA',
+                            documentTitle,
                             category: cat.liveSourceCategory
                         })
                     }
                 );
 
-                const comicResult = await comicResponse.json();
+                const startResult = await startResponse.json();
 
-                if (!comicResponse.ok) {
+                if (!startResponse.ok) {
                     throw new Error(
-                        comicResult.error ||
-                        `Comic generation failed (${comicResponse.status}).`
+                        startResult.error ||
+                        `Comic generation could not start (${startResponse.status}).`
                     );
                 }
 
-                const comicPayload = comicResult.comic || comicResult;
+                const jobId = startResult.jobId;
 
-                let selectedComic = comicPayload;
-
-                if (Array.isArray(comicPayload?.comics)) {
-                    selectedComic =
-                        comicPayload.comics.find(
-                            comic =>
-                                comic.id === comicPayload.selectedComicId
-                        ) ||
-                        comicPayload.comics[0];
+                if (!jobId) {
+                    throw new Error('Comic generation did not return a job ID.');
                 }
 
-                if (!selectedComic) {
-                    throw new Error('Qwen did not return a usable comic.');
-                }
+                // Keep the job ID on the category for debugging and to avoid
+                // losing track of the running server-side job.
+                cat.comicJobId = jobId;
 
-                cat.comicTitle =
-                    selectedComic.title ||
-                    selectedComic.scenarioTitle ||
-                    'EULA Comic';
+                while (true) {
+                    // Polling uses short HTTP requests, avoiding Cloudflare's
+                    // timeout for the long Qwen/HiDream generation process.
+                    await new Promise(resolve => setTimeout(resolve, 3000));
 
-                cat.comicScenes =
-                    selectedComic.scenes ||
-                    selectedComic.panels ||
-                    [];
+                    const statusResponse = await fetch(
+                        `${LIVE_API_BASE}/api/categories/comic/jobs/${encodeURIComponent(jobId)}`
+                    );
 
-                cat.comicStatus = 'rendering-image';
+                    const job = await statusResponse.json();
 
-                if (document.getElementById('active-category')?.dataset.catId === cat.id) {
-                    renderComicForCategory(cat);
-                }
-
-                const renderResponse = await fetch(
-                    `${LIVE_API_BASE}/api/categories/comic/render`,
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            documentTitle:
-                                document.getElementById('doc-analysis-title')
-                                    ?.textContent
-                                    ?.replace(/^Document Analysis:\s*/, '') ||
-                                'Uploaded EULA',
-                            category: cat.liveSourceCategory,
-                            comic: selectedComic
-                        })
+                    if (!statusResponse.ok) {
+                        throw new Error(
+                            job.error ||
+                            `Could not check comic status (${statusResponse.status}).`
+                        );
                     }
-                );
 
-                const renderResult = await renderResponse.json();
+                    if (job.status === 'generating-story' ||
+                        job.status === 'queued') {
+                        cat.comicStatus = 'generating-story';
+                        refreshComicUI();
+                        continue;
+                    }
 
-                if (!renderResponse.ok) {
+                    if (job.status === 'rendering-image') {
+                        cat.comicStatus = 'rendering-image';
+
+                        if (job.comic) {
+                            cat.comicTitle =
+                                job.comic.title ||
+                                job.comic.scenarioTitle ||
+                                'EULA Comic';
+
+                            cat.comicScenes =
+                                job.comic.scenes ||
+                                job.comic.panels ||
+                                [];
+                        }
+
+                        refreshComicUI();
+                        continue;
+                    }
+
+                    if (job.status === 'error') {
+                        throw new Error(
+                            job.error || 'Comic generation failed.'
+                        );
+                    }
+
+                    if (job.status === 'ready') {
+                        const selectedComic = job.comic;
+                        const imageUrl = job.render?.image?.imageUrl;
+
+                        if (!selectedComic) {
+                            throw new Error(
+                                'Qwen did not return a usable comic.'
+                            );
+                        }
+
+                        if (!imageUrl) {
+                            throw new Error(
+                                'HiDream did not return a comic image.'
+                            );
+                        }
+
+                        cat.comicTitle =
+                            selectedComic.title ||
+                            selectedComic.scenarioTitle ||
+                            'EULA Comic';
+
+                        cat.comicScenes =
+                            selectedComic.scenes ||
+                            selectedComic.panels ||
+                            [];
+
+                        cat.comic = imageUrl.startsWith('http')
+                            ? imageUrl
+                            : `${LIVE_API_BASE}${imageUrl}`;
+
+                        cat.comicStatus = 'ready';
+                        refreshComicUI();
+                        return;
+                    }
+
                     throw new Error(
-                        renderResult.error ||
-                        `Comic rendering failed (${renderResponse.status}).`
+                        `Unknown comic job status: ${job.status}`
                     );
-                }
-
-                const imageUrl = renderResult?.image?.imageUrl;
-
-                if (!imageUrl) {
-                    throw new Error('HiDream did not return a comic image.');
-                }
-
-                cat.comic = imageUrl.startsWith('http')
-                    ? imageUrl
-                    : `${LIVE_API_BASE}${imageUrl}`;
-
-                cat.comicStatus = 'ready';
-
-                // Only refresh the UI if the user is still looking at
-                // this category. Otherwise the result remains cached.
-                if (document.getElementById('active-category')?.dataset.catId === cat.id) {
-                    renderComicForCategory(cat);
                 }
 
             } catch (error) {
@@ -802,9 +829,7 @@
                 cat.comicError =
                     error.message || 'Could not generate this comic.';
 
-                if (document.getElementById('active-category')?.dataset.catId === cat.id) {
-                    renderComicForCategory(cat);
-                }
+                refreshComicUI();
             }
         }
 
@@ -960,7 +985,7 @@
             });
         }
 
-        const LIVE_API_BASE = 'https://interfaces-yen-journalists-connections.trycloudflare.com';
+        const LIVE_API_BASE = 'https://jamie-roads-decor-goto.trycloudflare.com';
 
         async function extractPdfText(file) {
             if (!window.pdfjsLib) {
