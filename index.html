@@ -833,6 +833,242 @@
             }
         }
 
+        function refreshVideoUI(cat) {
+            const videoEl = document.getElementById('cat-video');
+            if (!videoEl) return;
+
+            const wrapper = videoEl.parentElement;
+            if (!wrapper) return;
+
+            wrapper.classList.add('relative');
+
+            let statusEl = document.getElementById('cat-video-status');
+
+            if (!statusEl) {
+                statusEl = document.createElement('div');
+                statusEl.id = 'cat-video-status';
+                statusEl.className =
+                    'absolute inset-0 flex flex-col items-center justify-center gap-3 ' +
+                    'bg-black/80 text-center px-6 rounded-md z-10';
+
+                wrapper.appendChild(statusEl);
+            }
+
+            if (cat.videoStatus === 'generating-script' ||
+                cat.videoStatus === 'queued') {
+                videoEl.pause();
+                videoEl.removeAttribute('src');
+                videoEl.load();
+
+                statusEl.innerHTML = `
+                    <span class="material-symbols-outlined text-secondary text-3xl animate-spin">
+                        progress_activity
+                    </span>
+                    <div>
+                        <p class="font-label-md font-bold text-white">
+                            Preparing video script…
+                        </p>
+                        <p class="text-xs text-white/60 mt-1">
+                            Qwen is creating a source-grounded visual story.
+                        </p>
+                    </div>`;
+
+                statusEl.classList.remove('hidden');
+                return;
+            }
+
+            if (cat.videoStatus === 'generating-video') {
+                videoEl.pause();
+                videoEl.removeAttribute('src');
+                videoEl.load();
+
+                statusEl.innerHTML = `
+                    <span class="material-symbols-outlined text-secondary text-3xl animate-spin">
+                        progress_activity
+                    </span>
+                    <div>
+                        <p class="font-label-md font-bold text-white">
+                            Generating video…
+                        </p>
+                        <p class="text-xs text-white/60 mt-1">
+                            LTX is rendering the animation, dialogue, and subtitles.
+                        </p>
+                    </div>`;
+
+                statusEl.classList.remove('hidden');
+                return;
+            }
+
+            if (cat.videoStatus === 'error') {
+                videoEl.pause();
+                videoEl.removeAttribute('src');
+                videoEl.load();
+
+                statusEl.innerHTML = `
+                    <span class="material-symbols-outlined text-error text-3xl">
+                        error
+                    </span>
+                    <div>
+                        <p class="font-label-md font-bold text-white">
+                            Video generation failed
+                        </p>
+                        <p class="text-xs text-white/60 mt-1">
+                            ${cat.videoError || 'Could not generate this video.'}
+                        </p>
+                    </div>`;
+
+                statusEl.classList.remove('hidden');
+                return;
+            }
+
+            if (cat.video) {
+                if (videoEl.src !== cat.video) {
+                    videoEl.src = cat.video;
+                    videoEl.load();
+                }
+
+                statusEl.classList.add('hidden');
+                return;
+            }
+
+            statusEl.innerHTML = `
+                <span class="material-symbols-outlined text-white/40 text-3xl">
+                    movie
+                </span>
+                <p class="text-sm text-white/60">
+                    Open the Video tab to generate this explainer.
+                </p>`;
+
+            statusEl.classList.remove('hidden');
+        }
+
+        async function ensureLiveVideo(cat) {
+            if (activeDocument !== 'live' || !cat) return;
+
+            if (cat.videoStatus === 'ready' && cat.video) {
+                refreshVideoUI(cat);
+                return;
+            }
+
+            if (cat.videoStatus === 'generating-script' ||
+                cat.videoStatus === 'generating-video' ||
+                cat.videoStatus === 'queued') {
+                return;
+            }
+
+            try {
+                cat.videoStatus = 'generating-script';
+                cat.videoError = '';
+                refreshVideoUI(cat);
+
+                const documentTitle =
+                    document.getElementById('doc-analysis-title')
+                        ?.textContent
+                        ?.replace(/^Document Analysis:\s*/, '') ||
+                    'Uploaded EULA';
+
+                const startResponse = await fetch(
+                    `${LIVE_API_BASE}/api/categories/video/start`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            documentTitle,
+                            category: cat.liveSourceCategory
+                        })
+                    }
+                );
+
+                const startResult = await startResponse.json();
+
+                if (!startResponse.ok) {
+                    throw new Error(
+                        startResult.error ||
+                        `Video generation could not start (${startResponse.status}).`
+                    );
+                }
+
+                const jobId = startResult.jobId;
+
+                if (!jobId) {
+                    throw new Error(
+                        'Video generation did not return a job ID.'
+                    );
+                }
+
+                cat.videoJobId = jobId;
+
+                while (true) {
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+
+                    const statusResponse = await fetch(
+                        `${LIVE_API_BASE}/api/categories/video/jobs/${encodeURIComponent(jobId)}`
+                    );
+
+                    const job = await statusResponse.json();
+
+                    if (!statusResponse.ok) {
+                        throw new Error(
+                            job.error ||
+                            `Could not check video status (${statusResponse.status}).`
+                        );
+                    }
+
+                    if (job.status === 'queued' ||
+                        job.status === 'generating-script') {
+                        cat.videoStatus = 'generating-script';
+                        refreshVideoUI(cat);
+                        continue;
+                    }
+
+                    if (job.status === 'generating-video') {
+                        cat.videoStatus = 'generating-video';
+                        refreshVideoUI(cat);
+                        continue;
+                    }
+
+                    if (job.status === 'error') {
+                        throw new Error(
+                            job.error || 'Video generation failed.'
+                        );
+                    }
+
+                    if (job.status === 'ready') {
+                        const videoUrl = job.video?.videoUrl;
+
+                        if (!videoUrl) {
+                            throw new Error(
+                                'LTX did not return a usable video.'
+                            );
+                        }
+
+                        cat.video = videoUrl.startsWith('http')
+                            ? videoUrl
+                            : `${LIVE_API_BASE}${videoUrl}`;
+
+                        cat.videoStatus = 'ready';
+                        refreshVideoUI(cat);
+                        return;
+                    }
+
+                    throw new Error(
+                        `Unknown video job status: ${job.status}`
+                    );
+                }
+
+            } catch (error) {
+                console.error('Live video generation failed:', error);
+
+                cat.videoStatus = 'error';
+                cat.videoError =
+                    error.message || 'Could not generate this video.';
+
+                refreshVideoUI(cat);
+            }
+        }
+
         function switchRightTab(tab) {
             const panels = { eula: document.getElementById('right-tab-eula'), cards: document.getElementById('cat-cards'), comic: document.getElementById('right-tab-comic'), video: document.getElementById('right-tab-video') };
             const buttons = { eula: document.getElementById('tabbtn-eula'), cards: document.getElementById('tabbtn-cards'), comic: document.getElementById('tabbtn-comic'), video: document.getElementById('tabbtn-video') };
@@ -874,6 +1110,18 @@
                     if (liveCategory) {
                         ensureLiveComic(liveCategory);
                     }
+                }
+            }
+
+            if (tab === 'video' && activeDocument === 'live') {
+                const catId =
+                    document.getElementById('active-category')?.dataset.catId;
+
+                const liveCategory =
+                    categories.find(cat => cat.id === catId);
+
+                if (liveCategory) {
+                    ensureLiveVideo(liveCategory);
                 }
             }
         }
@@ -19847,11 +20095,16 @@
             renderComicForCategory(cat);
 
             // Update Video
-            const videoEl = document.getElementById('cat-video');
-            videoEl.src = cat.video;
+            if (activeDocument === 'live') {
+                refreshVideoUI(cat);
+            } else {
+                const videoEl = document.getElementById('cat-video');
+                videoEl.src = cat.video;
+            }
 
-            // Outputs open on Video first, per the requested viewing order (Video -> Cards -> Comic)
-            switchRightTab('video');
+            // Show Cards first for immediate results.
+            // Comic and Video are generated on demand when their tabs are opened.
+            switchRightTab('cards');
 
             // Scroll the category + format area into view when the user picked it
             // (not on the initial render, to avoid an unwanted jump on page load)
@@ -20090,30 +20343,30 @@ communicated to end users.
 </div>
 </div>
 </div>
-<!-- RIGHT: Multimodal Tabs: Video, Cards, Comic, then the original EULA text -->
+<!-- RIGHT: Multimodal Tabs: Cards, Comic, Video, then the original EULA text -->
 <div class="w-full flex-1 min-h-0 flex flex-col min-w-0">
 <div class="flex gap-2 border-b border-white/10 mb-stack-sm w-full flex-wrap flex-shrink-0">
-<button class="px-4 py-2 font-label-md border-b-2 border-secondary text-secondary bg-secondary/10 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-video" onclick="switchRightTab('video')">
-<span class="material-symbols-outlined text-sm">play_circle</span> Video
-</button>
-<button class="px-4 py-2 font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-cards" onclick="switchRightTab('cards')">
+<button class="px-4 py-2 font-label-md border-b-2 border-secondary text-secondary bg-secondary/10 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-cards" onclick="switchRightTab('cards')">
 <span class="material-symbols-outlined text-sm">style</span> Cards
 </button>
 <button class="px-4 py-2 font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-comic" onclick="switchRightTab('comic')">
 <span class="material-symbols-outlined text-sm">menu_book</span> Comic
 </button>
+<button class="px-4 py-2 font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-video" onclick="switchRightTab('video')">
+<span class="material-symbols-outlined text-sm">play_circle</span> Video
+</button>
 <button class="px-4 py-2 font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-eula" onclick="switchRightTab('eula')">
 <span class="material-symbols-outlined text-sm">article</span> Original EULA
 </button>
 </div>
-<!-- Tab Content: Video (visible by default) -->
-<div class="flex flex-1 min-h-0 bg-surface-container/30 rounded-lg p-4 items-center justify-center" id="right-tab-video">
+<!-- Tab Content: Video (opened/generated on demand) -->
+<div class="hidden flex-1 min-h-0 bg-surface-container/30 rounded-lg p-4 items-center justify-center" id="right-tab-video">
 <div class="aspect-video h-[92%] max-w-[92%] bg-black rounded-md flex items-center justify-center border border-white/10">
 <video class="w-full h-full rounded-md" controls="" id="cat-video"></video>
 </div>
 </div>
-<!-- Tab Content: Cards (Hidden initially) -->
-<div class="hidden flex-1 min-h-0 grid-cols-2 gap-3 p-4 bg-surface-container/30 rounded-lg overflow-y-auto" id="cat-cards">
+<!-- Tab Content: Cards (visible by default) -->
+<div class="grid flex-1 min-h-0 grid-cols-2 gap-3 p-4 bg-surface-container/30 rounded-lg overflow-y-auto" id="cat-cards">
 </div>
 <!-- Tab Content: Comic (Hidden initially, sized to fit within one screen) -->
 <div class="hidden flex-1 min-h-0 flex-col bg-surface-container/30 rounded-lg p-5 gap-2" id="right-tab-comic">

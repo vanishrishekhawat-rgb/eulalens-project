@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { host, port, maxAnalyzePayloadMb, presentationPrecomputedRoot } from './config.js';
 import {
@@ -21,9 +22,14 @@ const app = express();
 // The browser starts a job, then polls its status so Cloudflare does not
 // have to keep one HTTP request open while Qwen and HiDream are running.
 const comicJobs = new Map();
+const videoJobs = new Map();
 
 function createComicJobId() {
   return `comic-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function createVideoJobId() {
+  return `video-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
 function asyncRoute(handler) {
@@ -46,6 +52,13 @@ const hiDreamOutputRoot =
   '/data/d1/vanishri/EULALens/Data/experiments/image-generation/hidream-o1/app-renders';
 
 app.use('/api/comic-assets', express.static(hiDreamOutputRoot));
+
+// Serve generated LTX videos through the EULALens backend.
+// This avoids exposing the separate LTX service or depending on its tunnel.
+const ltxVideoOutputRoot =
+  '/data/d1/vanishri/EULALens/Data/experiments/video-generation/ltx-2.3/app-renders';
+
+app.use('/api/video-assets', express.static(ltxVideoOutputRoot));
 
 app.get('/api/health', (_req, res) => {
   res.json(health());
@@ -135,6 +148,103 @@ app.get('/api/categories/comic/jobs/:jobId', (req, res) => {
   if (!job) {
     return res.status(404).json({
       error: 'Comic job not found.'
+    });
+  }
+
+  return res.json(job);
+});
+
+app.post('/api/categories/video/start', (req, res) => {
+  const jobId = createVideoJobId();
+
+  videoJobs.set(jobId, {
+    jobId,
+    status: 'queued',
+    createdAt: Date.now()
+  });
+
+  // Return immediately. Qwen and LTX continue after the response.
+  res.status(202).json({
+    jobId,
+    status: 'queued'
+  });
+
+  void (async () => {
+    try {
+      const job = videoJobs.get(jobId);
+      job.status = 'generating-script';
+
+      const scriptResult = await generateCategoryVideoScript(req.body);
+      const videoScript = scriptResult.video;
+
+      if (!videoScript?.modelPrompt) {
+        throw new Error('Qwen did not return a usable video script.');
+      }
+
+      job.videoScript = videoScript;
+      job.status = 'generating-video';
+
+      const category = {
+        ...req.body.category,
+        video: videoScript
+      };
+
+      const videoResult = await generateCategoryVideo({
+        ...req.body,
+        category
+      });
+
+      // LTX returns its own public URL, which may point to an ephemeral
+      // tunnel. When the local output path is available, expose the video
+      // through the EULALens backend instead.
+      const outputFile =
+        videoResult?.raw?.outputFile ||
+        videoResult?.raw?.output_file ||
+        videoResult?.raw?.postprocess?.finalOutputFile;
+
+      let videoUrl = videoResult?.videoUrl || '';
+
+      if (outputFile) {
+        const relativePath = path.relative(ltxVideoOutputRoot, outputFile);
+
+        if (
+          relativePath &&
+          !relativePath.startsWith('..') &&
+          !path.isAbsolute(relativePath)
+        ) {
+          videoUrl = `/api/video-assets/${relativePath
+            .split(path.sep)
+            .map(encodeURIComponent)
+            .join('/')}`;
+        }
+      }
+
+      job.status = 'ready';
+      job.video = {
+        ...videoResult,
+        videoUrl
+      };
+      job.completedAt = Date.now();
+    } catch (error) {
+      const job = videoJobs.get(jobId);
+
+      if (job) {
+        job.status = 'error';
+        job.error = error?.message || 'Video generation failed.';
+        job.completedAt = Date.now();
+      }
+
+      console.error(`Video job ${jobId} failed:`, error);
+    }
+  })();
+});
+
+app.get('/api/categories/video/jobs/:jobId', (req, res) => {
+  const job = videoJobs.get(req.params.jobId);
+
+  if (!job) {
+    return res.status(404).json({
+      error: 'Video job not found.'
     });
   }
 
