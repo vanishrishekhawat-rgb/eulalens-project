@@ -198,7 +198,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 1.25rem;
+            padding: 1rem;
             border-radius: 0.75rem;
             box-sizing: border-box;
         }
@@ -218,12 +218,17 @@
             pointer-events: none;
         }
         .flip-card-front span.material-symbols-outlined {
-            font-size: 2rem;
+            font-size: 1.75rem;
             position: relative;
+        }
+        #cat-cards {
+            /* cap the card grid at ~52rem and centre it, so cards stay a sensible size on wide screens */
+            padding: 1rem max(1rem, calc((100% - 52rem) / 2));
+            align-content: center;
         }
         .flip-card-front p {
             font-family: 'Inter', sans-serif;
-            font-size: 1rem;
+            font-size: 0.92rem;
             line-height: 1.4;
             font-weight: 600;
             position: relative;
@@ -258,14 +263,14 @@
             position: relative;
         }
         .flip-card-back .font-label-md {
-            font-size: 1.05rem;
+            font-size: 0.97rem;
             font-weight: 700;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.3rem;
             color: #7fd9c9 !important;
         }
         .flip-card-back p.text-xs {
-            font-size: 0.95rem;
-            line-height: 1.55;
+            font-size: 0.87rem;
+            line-height: 1.5;
             letter-spacing: 0.01em;
         }
 
@@ -278,12 +283,19 @@
         .bg-severity-low { background-color: rgba(16, 185, 129, 0.1); }
 
         #quick-index-dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 8px;
+            z-index: 50;
             max-height: 0;
             opacity: 0;
+            visibility: hidden;
             overflow: hidden;
-            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out;
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out, visibility 0.3s;
         }
         #quick-index-dropdown.open {
+            visibility: visible;
             max-height: 420px;
             opacity: 1;
             padding: 1rem;
@@ -312,13 +324,26 @@
             justify-content: center;
             align-items: center;
         }
-        .comic-overlay-wrap img {
-            max-height: 100%;
-            max-width: 100%;
-            width: auto;
-            height: auto;
-            object-fit: contain;
+        .comic-stage {
+            position: relative;
+            flex: none;
         }
+        .comic-overlay-wrap img {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        /* Comic focus mode: clamp the summary, slim the side column, trim paddings */
+        #active-category.comic-focus { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        #active-category.comic-focus #cat-summary p {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        #active-category.comic-focus #cat-summary { margin-top: -0.25rem; }
+        #active-category.comic-focus #insight-accordion { width: 13rem; }
+        #active-category.comic-focus #cat-comic-title { display: none; }
         .comic-overlay-grid {
             position: absolute;
             inset: 0;
@@ -337,18 +362,18 @@
             background: rgba(0,0,0,0.75);
             color: #fff;
             border-radius: 6px;
-            padding: 4px 8px;
-            font-size: 0.65rem;
-            line-height: 1.15;
+            padding: 0.4em 0.8em;
+            font-size: max(9px, calc(var(--cw, 640px) * 0.0165));
+            line-height: 1.2;
             text-align: center;
         }
         .comic-caption-bar .cap-title { font-weight: 700; display: block; }
         .comic-bubble {
             position: absolute;
             max-width: 46%;
-            font-size: 0.6rem;
-            line-height: 1.15;
-            padding: 5px 8px;
+            font-size: max(9px, calc(var(--cw, 640px) * 0.0155));
+            line-height: 1.2;
+            padding: 0.4em 0.7em;
             border: 1.5px solid #1f2937;
             background: #fff;
             color: #1f2937;
@@ -441,8 +466,8 @@
         /* --- Tech grid background --- */
         body {
             background-image:
-                linear-gradient(rgba(111, 217, 201, 0.055) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(111, 217, 201, 0.055) 1px, transparent 1px);
+                linear-gradient(rgba(111, 217, 201, 0.10) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(111, 217, 201, 0.10) 1px, transparent 1px);
             background-size: 44px 44px, 44px 44px;
             background-attachment: fixed;
         }
@@ -456,26 +481,20 @@
             z-index: 0;
             pointer-events: none;
             background-image:
-                linear-gradient(rgba(111, 217, 201, 0.10) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(111, 217, 201, 0.10) 1px, transparent 1px);
+                linear-gradient(rgba(111, 217, 201, 0.20) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(111, 217, 201, 0.20) 1px, transparent 1px);
             background-size: 44px 44px, 44px 44px;
-            -webkit-mask-image: radial-gradient(ellipse 70% 100% at 50% 50%, #000 0%, transparent 75%);
-            mask-image: radial-gradient(ellipse 70% 100% at 50% 50%, #000 0%, transparent 75%);
+            -webkit-mask-image: radial-gradient(ellipse 85% 100% at 50% 50%, #000 0%, transparent 85%);
+            mask-image: radial-gradient(ellipse 85% 100% at 50% 50%, #000 0%, transparent 85%);
         }
 
         /* --- Learn more collapsible --- */
-        #learn-more-panel {
-            display: grid;
-            grid-template-rows: 0fr;
-            opacity: 0;
-            transition: grid-template-rows 0.5s ease, opacity 0.4s ease;
-        }
         #learn-more-panel.open {
-            grid-template-rows: 1fr;
-            opacity: 1;
+            animation: learnMoreFadeIn 0.35s ease;
         }
-        #learn-more-panel > div {
-            overflow: hidden;
+        @keyframes learnMoreFadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         #learn-more-toggle .chevron {
             transition: transform 0.3s ease;
@@ -582,6 +601,23 @@
             closeCategoriesDialog();
         }
 
+        // Fit the comic (image + overlay) inside its panel so it never needs scrolling
+        function fitComic() {
+            const wrap = document.getElementById('cat-comic-wrap');
+            const stage = document.getElementById('cat-comic-stage');
+            const img = document.getElementById('cat-comic-img');
+            if (!wrap || !stage || !img || !img.naturalWidth) return;
+            const availW = wrap.clientWidth;
+            const availH = wrap.clientHeight;
+            if (!availW || !availH) return;
+            const ratio = img.naturalWidth / img.naturalHeight;
+            let w = availW, h = w / ratio;
+            if (h > availH) { h = availH; w = h * ratio; }
+            stage.style.width = Math.floor(w) + 'px';
+            stage.style.height = Math.floor(h) + 'px';
+            stage.style.setProperty('--cw', Math.floor(w) + 'px');
+        }
+
         function switchRightTab(tab) {
             const panels = { eula: document.getElementById('right-tab-eula'), cards: document.getElementById('cat-cards'), comic: document.getElementById('right-tab-comic'), video: document.getElementById('right-tab-video') };
             const buttons = { eula: document.getElementById('tabbtn-eula'), cards: document.getElementById('tabbtn-cards'), comic: document.getElementById('tabbtn-comic'), video: document.getElementById('tabbtn-video') };
@@ -606,36 +642,27 @@
                 }
             });
 
+            // The "open PDF directly" fallback link only matters on the Original EULA tab
+            const eulaLink = document.getElementById('cat-eula-fallback-link');
+            if (eulaLink) {
+                eulaLink.classList.toggle('hidden', tab !== 'eula');
+                eulaLink.classList.toggle('inline-flex', tab === 'eula');
+            }
+
+            // Comic focus mode: tighten the surrounding chrome so the comic can grow
+            const activeCat = document.getElementById('active-category');
+            if (activeCat) activeCat.classList.toggle('comic-focus', tab === 'comic');
+
             if (tab === 'comic') {
                 // Container was hidden (display:none) while the image loaded, so
-                // dimensions weren't available then. Recompute now that it's visible.
-                requestAnimationFrame(positionComicOverlay);
+                // dimensions weren't available then. Recompute after layout settles.
+                requestAnimationFrame(() => requestAnimationFrame(positionComicOverlay));
             }
         }
 
         function positionComicOverlay() {
-            const img = document.getElementById('cat-comic-img');
-            const grid = document.getElementById('cat-comic-overlay-grid');
-            if (!img || !grid || !img.naturalWidth) return;
-
-            const wrap = img.parentElement;
-            const containerW = wrap.clientWidth;
-            const containerH = wrap.clientHeight;
-            const naturalW = img.naturalWidth;
-            const naturalH = img.naturalHeight;
-
-            const scale = Math.min(containerW / naturalW, containerH / naturalH);
-            const renderedW = naturalW * scale;
-            const renderedH = naturalH * scale;
-            const offsetX = (containerW - renderedW) / 2;
-            const offsetY = (containerH - renderedH) / 2;
-
-            grid.style.left = `${offsetX}px`;
-            grid.style.top = `${offsetY}px`;
-            grid.style.width = `${renderedW}px`;
-            grid.style.height = `${renderedH}px`;
-            grid.style.right = 'auto';
-            grid.style.bottom = 'auto';
+            // Overlay grid now lives inside the sized "stage", so it stays aligned with the image.
+            fitComic();
         }
         window.addEventListener('resize', () => {
             if (document.getElementById('right-tab-comic') && !document.getElementById('right-tab-comic').classList.contains('hidden')) {
@@ -682,7 +709,8 @@
         function toggleLearnMore() {
             const panel = document.getElementById('learn-more-panel');
             const btn = document.getElementById('learn-more-toggle');
-            const opening = !panel.classList.contains('open');
+            const opening = panel.classList.contains('hidden');
+            panel.classList.toggle('hidden', !opening);
             panel.classList.toggle('open', opening);
             btn.classList.toggle('open', opening);
             btn.querySelector('.toggle-label').textContent = opening ? 'Show less' : 'Learn more';
@@ -751,7 +779,7 @@
                 scroll: 'start'
             },
             {
-                selector: '#insight-tabs',
+                selector: '#insight-accordion',
                 title: 'Impact & Lookouts',
                 body: 'These two tabs explain what the clause actually means for you, and the exact phrases to watch for in the text.',
                 scroll: 'center'
@@ -19260,7 +19288,8 @@
             const path = originalEulaPaths[doc];
             const eulaFrame = document.getElementById('cat-eula-frame');
             const fallbackLink = document.getElementById('cat-eula-fallback-link');
-            if (eulaFrame) eulaFrame.src = path;
+            // #view=Fit asks the browser's PDF viewer to scale a whole page into the frame
+            if (eulaFrame) eulaFrame.src = path + '#view=Fit';
             if (fallbackLink) fallbackLink.href = path;
         }
 
@@ -19329,7 +19358,7 @@
             cardsContainer.innerHTML = '';
             cat.cards.forEach(cardData => {
                 cardsContainer.innerHTML += `
-                    <div class="flip-card h-48 cursor-pointer group" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card h-44 cursor-pointer group" onclick="this.classList.toggle('flipped')">
                         <div class="flip-card-inner rounded-lg">
                             <div class="flip-card-front">
                                 <span class="material-symbols-outlined text-secondary mb-2">${cardData.icon}</span>
@@ -19403,58 +19432,59 @@
 <p class="text-body-lg text-on-surface-variant font-body-lg max-w-2xl mx-auto">EULALens reads the terms of service you would normally skip and turns wordy clauses into straightforward summaries: comics, cue cards, and short videos. See exactly what you agree to.</p>
 </div>
 </header>
-<!-- Try it yourself: PDF upload -->
-<section class="mb-stack-lg glass-panel-strong rounded-xl p-container-padding shadow-lg">
-<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-sm border-b border-white/10 pb-4 flex items-center gap-3">
+<!-- Try it yourself (left) + sample EULAs (right), side by side -->
+<div class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.7fr)] gap-stack-md mb-stack-md items-stretch">
+<section class="glass-panel-strong rounded-xl p-4 shadow-lg flex flex-col">
+<h2 class="font-title-lg text-title-lg text-on-surface mb-2 border-b border-white/10 pb-2 flex items-center gap-2">
 <span class="material-symbols-outlined text-secondary">upload_file</span> Try it yourself
-                </h2>
-<p class="text-on-surface-variant font-body-md mb-stack-md">Upload a EULA or terms-of-service PDF and see it broken down into plain-English categories, comics, cue cards, and videos.</p>
-<div class="upload-dropzone rounded-xl p-stack-md flex flex-col items-center justify-center text-center gap-2 cursor-pointer" id="upload-dropzone">
+</h2>
+<p class="text-on-surface-variant text-sm mb-3">Upload a EULA or terms-of-service PDF to break it down.</p>
+<div class="upload-dropzone rounded-xl p-3 flex flex-1 flex-col items-center justify-center text-center gap-1 cursor-pointer" id="upload-dropzone">
 <span class="material-symbols-outlined text-3xl text-secondary">cloud_upload</span>
-<p class="font-label-md text-on-surface">Drop a PDF here, or click to browse</p>
+<p class="font-label-md text-on-surface text-sm">Drop a PDF here, or click to browse</p>
 <input accept="application/pdf" class="hidden" id="upload-input" type="file"/>
 </div>
-<div class="mt-stack-sm" id="upload-status"></div>
+<div class="mt-2" id="upload-status"></div>
 </section>
-<!-- Sample EULAs -->
-<section class="mb-stack-lg glass-panel rounded-xl p-container-padding border border-white/5 shadow-lg">
-<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-sm border-b border-white/10 pb-4">…or explore a sample EULA</h2>
-<p class="text-on-surface-variant font-body-md mb-stack-md">Pick a real EULA below to explore its risk categories, cards, comics, and video explainers.</p>
-<div class="grid grid-cols-2 md:grid-cols-3 gap-gutter">
-<button onclick="openDocumentView('zoom')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-2 text-center">
-<span class="material-symbols-outlined text-3xl text-secondary">gavel</span>
-<span class="font-label-md text-on-surface">Zoom</span>
+<section class="glass-panel rounded-xl p-4 border border-white/5 shadow-lg">
+<h2 class="font-title-lg text-title-lg text-on-surface mb-2 border-b border-white/10 pb-2">…or explore a sample EULA</h2>
+<p class="text-on-surface-variant text-sm mb-3">Pick a real EULA to explore its risk categories, cards, comics, and videos.</p>
+<div class="grid grid-cols-3 gap-2">
+<button onclick="openDocumentView('zoom')" class="glass-panel rounded-lg px-2 py-3 border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-1 text-center">
+<span class="material-symbols-outlined text-2xl text-secondary">gavel</span>
+<span class="font-label-md text-on-surface text-xs">Zoom</span>
 </button>
-<button onclick="openDocumentView('spotify')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-2 text-center">
-<span class="material-symbols-outlined text-3xl text-secondary">description</span>
-<span class="font-label-md text-on-surface">Spotify</span>
+<button onclick="openDocumentView('spotify')" class="glass-panel rounded-lg px-2 py-3 border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-1 text-center">
+<span class="material-symbols-outlined text-2xl text-secondary">description</span>
+<span class="font-label-md text-on-surface text-xs">Spotify</span>
 </button>
-<button onclick="openDocumentView('windows11')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-2 text-center">
-<span class="material-symbols-outlined text-3xl text-secondary">window</span>
-<span class="font-label-md text-on-surface">Windows</span>
+<button onclick="openDocumentView('windows11')" class="glass-panel rounded-lg px-2 py-3 border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-1 text-center">
+<span class="material-symbols-outlined text-2xl text-secondary">window</span>
+<span class="font-label-md text-on-surface text-xs">Windows</span>
 </button>
-<button onclick="openDocumentView('steam')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-2 text-center">
-<span class="material-symbols-outlined text-3xl text-secondary">sports_esports</span>
-<span class="font-label-md text-on-surface">Steam</span>
+<button onclick="openDocumentView('steam')" class="glass-panel rounded-lg px-2 py-3 border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-1 text-center">
+<span class="material-symbols-outlined text-2xl text-secondary">sports_esports</span>
+<span class="font-label-md text-on-surface text-xs">Steam</span>
 </button>
-<button onclick="openDocumentView('adobe')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-2 text-center">
-<span class="material-symbols-outlined text-3xl text-secondary">brush</span>
-<span class="font-label-md text-on-surface">Adobe</span>
+<button onclick="openDocumentView('adobe')" class="glass-panel rounded-lg px-2 py-3 border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-1 text-center">
+<span class="material-symbols-outlined text-2xl text-secondary">brush</span>
+<span class="font-label-md text-on-surface text-xs">Adobe</span>
 </button>
-<button onclick="openDocumentView('deepfake')" class="glass-panel rounded-lg p-stack-md border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-2 text-center">
-<span class="material-symbols-outlined text-3xl text-secondary">face_retouching_off</span>
-<span class="font-label-md text-on-surface">Deepfake Challenge</span>
+<button onclick="openDocumentView('deepfake')" class="glass-panel rounded-lg px-2 py-3 border border-white/10 hover:border-secondary/50 hover:bg-white/5 hover:-translate-y-0.5 transition-all flex flex-col items-center gap-1 text-center">
+<span class="material-symbols-outlined text-2xl text-secondary">face_retouching_off</span>
+<span class="font-label-md text-on-surface text-xs">Deepfake Challenge</span>
 </button>
 </div>
 </section>
+</div>
 <!-- Learn more toggle -->
-<div class="flex justify-center mb-stack-lg">
+<div class="flex justify-center mb-stack-sm">
 <button class="font-mono-tech text-xs uppercase tracking-wider text-secondary border border-secondary/30 rounded-full px-5 py-2.5 flex items-center gap-2 hover:bg-secondary/10 transition-colors" id="learn-more-toggle" onclick="toggleLearnMore()">
 <span class="toggle-label">Learn more</span>
 <span class="material-symbols-outlined text-sm chevron">expand_more</span>
 </button>
 </div>
-<div id="learn-more-panel">
+<div id="learn-more-panel" class="hidden">
 <div>
 <div class="glass-panel rounded-xl p-container-padding mb-stack-lg flex justify-center border border-white/5 shadow-lg">
 <div class="aspect-[21/9] w-full bg-surface-container/30 border border-white/10 rounded-lg flex items-center justify-center relative overflow-hidden">
@@ -19540,9 +19570,20 @@ communicated to end users.
 </main>
 </div>
 <!-- Documents Tab -->
-<div class="hidden flex-1 pt-16 h-screen overflow-hidden flex flex-col" id="documents-tab">
-<!-- Floating toolbar: stays pinned on screen regardless of scroll position -->
-<div class="fixed top-20 right-4 z-40 flex flex-col items-end gap-2" id="doc-toolbar">
+<div class="hidden flex-none pt-16 h-screen overflow-hidden flex flex-col" id="documents-tab">
+<!-- Main Content: lands directly on the output for the highest-risk category -->
+<main class="flex-1 px-container-padding md:px-stack-lg pt-2 pb-container-padding md:pb-stack-md overflow-hidden min-w-0 flex flex-col min-h-0">
+<header class="mb-stack-sm border-b border-white/5 pb-stack-sm relative flex-shrink-0 flex items-center justify-between gap-3 flex-wrap" id="doc-header">
+<div class="flex items-center gap-4 min-w-0">
+<button class="text-on-surface-variant hover:text-secondary flex items-center gap-1 text-sm whitespace-nowrap transition-colors" onclick="backToHome()">
+<span class="material-symbols-outlined text-sm">arrow_back</span> Back
+</button>
+<h1 class="font-headline-lg text-headline-lg text-on-surface flex items-center gap-3 min-w-0">
+<span class="material-symbols-outlined text-secondary text-3xl">analytics</span>
+<span id="doc-analysis-title" class="truncate">Document Analysis: Zoom TOS</span>
+</h1>
+</div>
+<div class="relative flex items-center gap-2" id="doc-toolbar">
 <div class="flex items-center gap-2">
 <button class="bg-surface-container/80 hover:bg-surface-variant text-on-surface px-4 py-2 rounded-full border border-white/10 transition-colors flex items-center gap-2 backdrop-blur-md shadow-lg" id="categories-btn" onclick="openCategoriesDialog()">
 <span class="material-symbols-outlined text-secondary">view_stream</span> Categories
@@ -19564,28 +19605,22 @@ communicated to end users.
 </div>
 </div>
 </div>
-<!-- Main Content: lands directly on the output for the highest-risk category -->
-<main class="flex-1 p-container-padding md:p-stack-lg overflow-hidden min-w-0 flex flex-col min-h-0">
-<header class="mb-stack-sm border-b border-white/5 pb-stack-sm relative flex-shrink-0" id="doc-header">
-<button class="text-on-surface-variant hover:text-secondary flex items-center gap-1 text-sm mb-2 transition-colors" onclick="backToHome()">
-<span class="material-symbols-outlined text-sm">arrow_back</span> Back to Overview
-</button>
-<h1 class="font-headline-lg text-headline-lg text-on-surface flex items-center gap-3 pr-40">
-<span class="material-symbols-outlined text-secondary text-3xl">analytics</span>
-<span id="doc-analysis-title">Document Analysis: Zoom TOS</span>
-</h1>
 </header>
 <!-- Active Category Detail Area -->
-<div class="glass-panel rounded-xl p-container-padding border-t-2 severity-high relative transition-all duration-500 flex-1 min-h-0 flex flex-col" id="active-category">
+<div class="glass-panel rounded-xl px-container-padding py-4 border-t-2 severity-high relative transition-all duration-500 flex-1 min-h-0 flex flex-col" id="active-category">
 <div class="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
 <span class="material-symbols-outlined text-9xl">gavel</span>
 </div>
 <div class="relative z-10 flex flex-col gap-stack-sm flex-1 min-h-0">
 <!-- Title & Summary (full width) -->
 <div class="w-full flex-shrink-0">
-<div class="flex items-center gap-3 mb-stack-sm">
+<div class="flex items-center gap-3 mb-stack-sm flex-wrap">
 <h2 class="font-headline-md text-headline-md text-on-surface" id="cat-title">System Requirements</h2>
 <span class="px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider border severity-high bg-severity-high shadow-[0_0_10px_rgba(217,112,94,0.2)]" id="cat-badge">High Risk</span>
+<button class="ml-auto bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/30 px-4 py-2 rounded-md font-label-md text-sm transition-colors flex items-center gap-2" id="next-category-btn" onclick="nextCategory()">
+Next Category
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
 </div>
 <div class="prose prose-invert max-w-none text-on-surface-variant font-body-md leading-relaxed" id="cat-summary">
 <p class="">The user is fully responsible for maintaining compliant hardware and networks to use the service. Failures leading to service degradation are not Zoom's liability.</p>
@@ -19594,7 +19629,7 @@ communicated to end users.
 <!-- Main row: left insight accordion + right multimodal tabs -->
 <div class="w-full flex-1 min-h-0 flex flex-col md:flex-row gap-stack-md">
 <!-- LEFT: Impact & Lookouts as a click-to-reveal accordion -->
-<div class="w-full md:w-64 flex-shrink-0 flex flex-col gap-2" id="insight-accordion">
+<div class="w-full md:w-64 flex-shrink-0 flex flex-col gap-2 min-h-0 overflow-y-auto pr-1" id="insight-accordion">
 <div class="glass-panel rounded-lg overflow-hidden border-l-4 severity-high" id="insight-box-impact">
 <button class="w-full flex items-center justify-between px-4 py-3 font-label-md text-on-surface hover:bg-white/5 transition-colors" id="insight-accbtn-impact" onclick="toggleInsightPanel('impact')">
 <span class="flex items-center gap-2"><span class="material-symbols-outlined text-sm text-secondary">trending_up</span> Impact</span>
@@ -19613,23 +19648,27 @@ communicated to end users.
 <ul class="list-disc list-inside text-sm text-on-surface-variant space-y-1" id="cat-lookouts"></ul>
 </div>
 </div>
+<div class="flex flex-col gap-1.5 mt-1 pt-3 border-t border-white/10" id="format-buttons">
+<p class="font-mono-tech text-[10px] uppercase text-on-surface-variant mb-0.5">View as</p>
+<button class="w-full px-4 py-2.5 font-label-md border rounded-lg border-secondary text-secondary bg-secondary/10 transition-colors flex items-center gap-2" id="tabbtn-video" onclick="switchRightTab('video')">
+<span class="material-symbols-outlined text-sm">play_circle</span> Video
+</button>
+<button class="w-full px-4 py-2.5 font-label-md border rounded-lg border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors flex items-center gap-2" id="tabbtn-cards" onclick="switchRightTab('cards')">
+<span class="material-symbols-outlined text-sm">style</span> Cue Cards
+</button>
+<button class="w-full px-4 py-2.5 font-label-md border rounded-lg border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors flex items-center gap-2" id="tabbtn-comic" onclick="switchRightTab('comic')">
+<span class="material-symbols-outlined text-sm">menu_book</span> Comic
+</button>
+<button class="w-full px-4 py-2.5 font-label-md border rounded-lg border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors flex items-center gap-2" id="tabbtn-eula" onclick="switchRightTab('eula')">
+<span class="material-symbols-outlined text-sm">article</span> Original EULA
+</button>
+<a class="hidden items-center gap-1 px-1 pt-1 text-xs text-secondary hover:underline" id="cat-eula-fallback-link" href="#" target="_blank" rel="noopener">
+<span class="material-symbols-outlined text-sm">open_in_new</span> PDF not loading? Open it directly
+</a>
+</div>
 </div>
 <!-- RIGHT: Multimodal Tabs: Video, Cards, Comic, then the original EULA text -->
 <div class="w-full flex-1 min-h-0 flex flex-col min-w-0">
-<div class="flex gap-2 border-b border-white/10 mb-stack-sm w-full flex-wrap flex-shrink-0">
-<button class="px-4 py-2 font-label-md border-b-2 border-secondary text-secondary bg-secondary/10 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-video" onclick="switchRightTab('video')">
-<span class="material-symbols-outlined text-sm">play_circle</span> Video
-</button>
-<button class="px-4 py-2 font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-cards" onclick="switchRightTab('cards')">
-<span class="material-symbols-outlined text-sm">style</span> Cards
-</button>
-<button class="px-4 py-2 font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-comic" onclick="switchRightTab('comic')">
-<span class="material-symbols-outlined text-sm">menu_book</span> Comic
-</button>
-<button class="px-4 py-2 font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-t-md transition-colors flex items-center gap-2" id="tabbtn-eula" onclick="switchRightTab('eula')">
-<span class="material-symbols-outlined text-sm">article</span> Original EULA
-</button>
-</div>
 <!-- Tab Content: Video (visible by default) -->
 <div class="flex flex-1 min-h-0 bg-surface-container/30 rounded-lg p-4 items-center justify-center" id="right-tab-video">
 <div class="aspect-video h-[92%] max-w-[92%] bg-black rounded-md flex items-center justify-center border border-white/10">
@@ -19637,29 +19676,23 @@ communicated to end users.
 </div>
 </div>
 <!-- Tab Content: Cards (Hidden initially) -->
-<div class="hidden flex-1 min-h-0 grid-cols-2 gap-3 p-4 bg-surface-container/30 rounded-lg overflow-y-auto" id="cat-cards">
+<div class="hidden flex-1 min-h-0 grid-cols-2 gap-3 bg-surface-container/30 rounded-lg overflow-y-auto" id="cat-cards">
 </div>
 <!-- Tab Content: Comic (Hidden initially, sized to fit within one screen) -->
-<div class="hidden flex-1 min-h-0 flex-col bg-surface-container/30 rounded-lg p-5 gap-2" id="right-tab-comic">
-<p class="font-label-md font-bold text-on-surface" id="cat-comic-title"></p>
-<div class="comic-overlay-wrap">
-<img alt="Comic strip" class="rounded-md object-contain border border-white/10 shadow-lg block" id="cat-comic-img" src=""/>
+<div class="hidden flex-1 min-h-0 flex-col bg-surface-container/30 rounded-lg p-1 gap-0.5" id="right-tab-comic">
+<p class="font-label-md font-bold text-on-surface text-sm leading-tight flex-shrink-0" id="cat-comic-title"></p>
+<div class="comic-overlay-wrap" id="cat-comic-wrap">
+<div class="comic-stage" id="cat-comic-stage">
+<img alt="Comic strip" class="rounded-md border border-white/10 shadow-lg block" id="cat-comic-img" src="" onload="fitComic()"/>
 <div class="comic-overlay-grid" id="cat-comic-overlay-grid"></div>
 </div>
 </div>
+</div>
 <!-- Tab Content: Original EULA (Hidden initially, sized to fit within one screen) -->
-<div class="hidden flex-1 min-h-0 flex-col bg-surface-container/30 rounded-lg p-1 gap-1" id="right-tab-eula">
-<iframe class="w-full flex-1 rounded-md bg-white" id="cat-eula-frame" src=""></iframe>
-<a class="text-xs text-secondary hover:underline text-center py-1" id="cat-eula-fallback-link" href="#" target="_blank">PDF not loading? Open it directly</a>
+<div class="hidden flex-1 min-h-0 flex-col bg-surface-container/30 rounded-lg p-1" id="right-tab-eula">
+<iframe class="w-full flex-1 min-h-0 rounded-md bg-white" id="cat-eula-frame" src=""></iframe>
 </div>
 </div>
-</div>
-<!-- Next Category -->
-<div class="flex justify-end flex-shrink-0">
-<button class="bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/30 px-5 py-2.5 rounded-md font-label-md transition-colors flex items-center gap-2" id="next-category-btn" onclick="nextCategory()">
-Next Category
-<span class="material-symbols-outlined text-sm">arrow_forward</span>
-</button>
 </div>
 </div>
 </div>
